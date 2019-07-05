@@ -17,12 +17,13 @@ BetaTot=1.45; %compression ratio
 
 % PARAMETRI
 Dtip=1;
-Mw1_tip=0.7;
 etaTT=0.85;
 
-work1=0.3387;%0.339;%0.3177;%0.3; %lavoro percentuale sul primo rotore
-rotRatio=1.2574;%1.5;%1.3;   %se rotRatio cresce leul2 cresce ma M2rel cresce
-n=2800;%2848;%3000; %se n cresce leul1 cresce, Beta1 deve essere aumentato per non essere nullo all'hub
+
+Mw1_tip=0.773;%0.7823;
+work1=0.4766;%0.5;%0.3;%0.3330;%0.3317;%0.3387;%0.339;%0.3177;%0.3; %lavoro percentuale sul primo rotore
+rotRatio=0.78;%1.2455;%1.2574;%1.5;%1.3;   %se rotRatio cresce leul2 cresce ma M2rel cresce
+n=3000;%2870;%2800;%2848;%3000; %se n cresce leul1 cresce, Beta1 deve essere aumentato per non essere nullo all'hub
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
