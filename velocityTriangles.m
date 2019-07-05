@@ -6,6 +6,8 @@ function [station leulTot leul1 leul2]=velocityTriangles(v1, v1ax, v2ax, v4ax,S,
     gamma=1.4;
     mdot=100;
 
+maxiter = 1000;    
+    
 v4=150; v2=240; 
 v2old=1000; v4old=1000;
 
@@ -25,7 +27,7 @@ while errorLeul>1e-4
         
 iterVelocity=[iterVelocity 0];   v2axold=1000;   v4old=1000;   v2old=1000;
 
-while abs(v4-v4old)>1e-4 && abs(v2-v2old)>1e-4 && abs(v2ax-v2axold)>1e-4
+while abs(v4-v4old)>1e-4 && abs(v2-v2old)>1e-4 && abs(v2ax-v2axold)>1e-4 && iterVelocity(end) < maxiter
     v2old=v2;
     v2axold=v2ax;
     v4old=v4;
@@ -63,6 +65,10 @@ end
        errorLeul=0;
     end
 end
+if ~isreal(v2t)
+    station.v2t=v2t;
+    return
+else
 w1t=v1t-U1;
 w2t=v2t-U1;
 w3t=v2t-U2;
@@ -126,6 +132,6 @@ station.Dhis1=Dhis1;
 station.Dhis2=Dhis2;
 station.iterWork=iterWork;
 station.iterVelocity=iterVelocity;
-
+end
 end
 

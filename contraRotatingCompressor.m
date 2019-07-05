@@ -20,9 +20,9 @@ Dtip=1;
 Mw1_tip=0.7;
 etaTT=0.85;
 
-work1=0.55; %lavoro percentuale sul primo rotore
-rotRatio=1;   %se rotRatio cresce leul2 cresce ma M2rel cresce
-n=3000; %se n cresce leul1 cresce, Beta1 deve essere aumentato per non essere nullo all'hub
+work1=0.3387;%0.339;%0.3177;%0.3; %lavoro percentuale sul primo rotore
+rotRatio=1.2574;%1.5;%1.3;   %se rotRatio cresce leul2 cresce ma M2rel cresce
+n=2800;%2848;%3000; %se n cresce leul1 cresce, Beta1 deve essere aumentato per non essere nullo all'hub
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -49,7 +49,7 @@ P1=Pt1*(T1/Tt1)^(gamma/(gamma-1));
 rho1=P1/(R*T1);
 S=mdot/(v1ax*rho1);
 Dhub=@(Dhub) S-pi/4*(Dtip^2-Dhub^2);
-Dhub=fsolve(Dhub,Dtip);
+Dhub=fzero(Dhub,Dtip);
 b=(Dtip-Dhub)/2;
 Dmid=(Dtip+Dhub)/2;
 
@@ -67,15 +67,25 @@ v2ax=v1ax; v4ax=v1ax;
 Mrel_tip1=TIP.w1/sqrt(gamma*R*T1);
 Mrel_tip2=TIP.w3/sqrt(gamma*R*TIP.T2);
 
+close all
 %Howell correlation per calcolare il
-sigma1=[3 0.8 0.6];
-sigma2=[3 2 1.1];
-[DBetaOpt1(1)] = howellCorrelation(HUB.beta2,5e5,sigma1(1));
-[DBetaOpt1(2)] = howellCorrelation(MID.beta2,5e5,sigma1(2));
-[DBetaOpt1(3)] = howellCorrelation(TIP.beta2,5e5,sigma1(3));
-[DBetaOpt2(1)] = howellCorrelation(HUB.beta4,5e5,sigma2(1));
-[DBetaOpt2(2)] = howellCorrelation(MID.beta4,5e5,sigma2(2));
-[DBetaOpt2(3)] = howellCorrelation(TIP.beta4,5e5,sigma2(3));
+iterHowell = 0;
+maxiter = 100;
+tol = 1e-3;
+
+sigmaLimit = 2.5;
+sigma=0.625:0.01:sigmaLimit;
+
+
+%while changeSolidity < 0.01 && changeSolidity > -0.01 || sigma > sigmaLimit && iterHowell < maxiter || iterHowell == 0
+
+for i = 1 : length(sigma)
+[DBetaOpt1(1)] = howellCorrelation(HUB.beta2,5e5,sigma(i));
+[DBetaOpt1(2)] = howellCorrelation(MID.beta2,5e5,sigma(i));
+[DBetaOpt1(3)] = howellCorrelation(TIP.beta2,5e5,sigma(i));
+[DBetaOpt2(1)] = howellCorrelation(HUB.beta4,5e5,sigma(i));
+[DBetaOpt2(2)] = howellCorrelation(MID.beta4,5e5,sigma(i));
+[DBetaOpt2(3)] = howellCorrelation(TIP.beta4,5e5,sigma(i));
 
 changeSolidity1(1)=DBetaOpt1(1)-HUB.Dbeta1;  %se <1 aumentare solidity
 changeSolidity1(2)=DBetaOpt1(2)-MID.Dbeta1;  %se >1 diminuire solidity
@@ -83,39 +93,105 @@ changeSolidity1(3)=DBetaOpt1(3)-TIP.Dbeta1;
 changeSolidity2(1)=DBetaOpt2(1)+HUB.Dbeta2;
 changeSolidity2(2)=DBetaOpt2(2)+MID.Dbeta2;
 changeSolidity2(3)=DBetaOpt2(3)+TIP.Dbeta2;
+changeSolidity(:,i) = [changeSolidity1'; changeSolidity2'];
 
-%     Dh1is_tip=mid.DhTT1is-(tip.v2^2-tip.v1^2)/2;
-%     Dh1is_hub=mid.DhTT1is-(hub.v2^2-hub.v1^2)/2;
-%     Dh2is_tip=mid.DhTT2is-(tip.v4^2-tip.v2^2)/2;
-%     Dh2is_hub=mid.DhTT2is-(hub.v4^2-hub.v2^2)/2;
-%         
-% Dh1is=[Dh1is_hub   Cp*T1*(Beta1(2)^((gamma-1)/gamma)-1)   Dh1is_tip];  %hub-mid-tip
-% Dh2is=[Dh2is_hub   Cp*T2(2)*(Beta2(2)^((gamma-1)/gamma)-1)   Dh2is_tip];
-% 
-%     clearvars Dh1is_tip Dh1is_hub Dh2is_tip Dh2is_hub
-% 
-% T2=[T1+Dh1is(1)/Cp/etaTT     T1+Dh1is(2)/Cp/etaTT     T1+Dh1is(3)/Cp/etaTT] ; %hub-mid-tip
-% T4=[T2(1)+Dh2is(1)/Cp/etaTT   T2(2)+Dh2is(2)/Cp/etaTT   T2(3)+Dh2is(3)/Cp/etaTT];
-% 
-% 
-% Beta1=[(1+Dh1is(1)/(Cp*T1))^(gamma/(gamma-1))     Beta1(2)     (1+Dh1is(3)/(Cp*T1))^(gamma/(gamma-1))];
-% Beta2=[(1+Dh2is(1)/(Cp*T2(1)))^(gamma/(gamma-1))     Beta2(2)     (1+Dh2is(3)/(Cp*T2(3)))^(gamma/(gamma-1))];
-% P2=[Beta1(1)*P1    Beta1(2)*P1     Beta1(3)*P1];
-% P4=[Beta2(1)*P2(1)    Beta2(2)*P2(2)     Beta2(3)*P2(3)];
-% 
-% rho2=[P2(1)/(R*T2(1))    P2(2)/(R*T2(2))    P2(3)/(R*T2(3))];
-% rho4=[P4(1)/(R*T4(1))    P4(2)/(R*T4(2))    P4(3)/(R*T4(3))];
-% 
-% 
-% v2ax=[mdot/(S*rho2(1))    mdot/(S*rho2(2))    mdot/(S*rho2(3))];
-% v4ax=[mdot/(S*rho4(1))    mdot/(S*rho4(2))    mdot/(S*rho4(3))];
-% 
+end
 
+[changeBest,index] = min(abs(changeSolidity)')
 
-%plotVelocities(v1ax,v1,v2,v4,w1,w2,w3,w4,v1t,v2t,v4t,w1t,w2t,w3t,w4t,U1_mid,U2_mid)
-
-%leul_check=0.5*(v2^2-v1^2)-0.5*(w2^2-w1^2)+0.5*(v4^2-v2^2)-0.5*(w4^2-w3^2);
+if changeBest(1) > 1 || changeBest(2) > 1 || changeBest(3) > 1 || changeBest(4) > 1 || changeBest(5) > 1 || changeBest(6) > 1
+    disp('intervieni, howell non è ok')
+    
+    Mrel_tip2
+    solidityBest = sigma(index)
+    return 
+else
+solidityBest = sigma(index)
+Mrel_tip2
+end
+%iterHowell = iterHowell + 1;
 
 
 
+%% New Part
+Re = 3e5;
+mu = 1.81e-5;
 
+c_hub = Re * mu / (rho1 * w1_hub);
+c_mid = Re * mu / (rho1 * w1_mid);
+c_tip = Re * mu / (rho1 * w1_tip);
+
+%if deltaBeta_optimal --> SOMETHING TO DO ON THE SOLIDITY?
+
+%% Skip Howell, Pass to Leiblein
+% Assumptions:
+% etaStage = etaS = 0.85
+% eta_rotor = etaStage
+%
+% Choose:
+th = 0.08;      %thickness 8% of the chord
+c = 0.13;       %chord [m] constant over the span
+
+%number of blades
+sigma_mid = 1;
+s = c / sigma_mid;
+
+n_blades = pi * D_mid / s;
+n_blades = floor(n_blades);
+if rem(n_blades,2)
+    n_blades = n_blades + 1;
+end
+
+s_mid = pi * D_mid / n_blades;
+s_tip = pi * D_tip / n_blades;
+s_hub = pi * D_hub / n_blades;
+
+sigma_mid = c / s_mid; sigma_mid = 1; %imposed!!!!!!
+sigma_tip = c / s_tip; 
+sigma_hub = c / s_hub;
+
+%% Camber angle --> need iteration
+% epsilon = deltaBeta = theta + i - delta
+% DO GRAPHS FOR DIFFERENT ANGLES!!!
+epsilon_hub = deltaBeta_hub;
+epsilon_mid = deltaBeta_mid;
+epsilon_tip = deltaBeta_tip;
+
+%guess
+theta_hub = epsilon_hub;%16;
+theta_mid = epsilon_mid;%35;
+theta_tip = epsilon_tip;%52;2;
+
+
+i = 0;
+maxiter = 100;
+tol = 1e-3;
+err = 0;
+
+while err > tol && i < maxiter || i == 0
+
+    
+%% Camber angle --> need iteration
+% epsilon = deltaBeta = theta + i - delta
+
+%START WITH NACA PROFILES, link between CL and the angle
+% FOR NACA 65
+Cl = @(theta) theta / 25;
+
+Cl_hub = Cl(theta_hub);
+Cl_mid = Cl(theta_mid);
+Cl_tip = Cl(theta_tip);
+
+Re = @(rho,u,d) rho * u * d / mu;
+
+Re_hub = Re((rho1+rho2_hub)/2,(w1_hub + w2_hub)/2,c);
+Re_mid = Re((rho1+rho2_mid)/2,(w1_mid + w2_mid)/2,c);
+Re_tip = Re((rho1+rho2_tip)/2,(w1_tip + w2_tip)/2,c);
+
+
+lieblein;
+
+end
+
+
+checkLoading;
