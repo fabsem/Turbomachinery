@@ -1,4 +1,7 @@
-% DATI 
+%PATH
+addpath('liebleinCorrelations/')
+
+% DATI
 clear all; close all; clc
 mdot=100; %[kg/s]
 Pt1=100000; %[Pa]
@@ -42,7 +45,7 @@ while residual>1e-3 && M1>0
     w1_tip=sqrt(v1ax^2+w1t_tip^2);
     Mrel_tip_check=w1_tip/sqrt(gamma*R*T1);
     residual=abs(Mw1_tip-Mrel_tip_check);
-end    
+end
 %%
 clearvars U1_tip residual w1_tip w1t_tip
 
@@ -81,89 +84,90 @@ sigma=0.625:0.01:sigmaLimit;
 %while changeSolidity < 0.01 && changeSolidity > -0.01 || sigma > sigmaLimit && iterHowell < maxiter || iterHowell == 0
 
 for i = 1 : length(sigma)
-[DBetaOpt1(1)] = howellCorrelation(HUB.beta2,5e5,sigma(i));
-[DBetaOpt1(2)] = howellCorrelation(MID.beta2,5e5,sigma(i));
-[DBetaOpt1(3)] = howellCorrelation(TIP.beta2,5e5,sigma(i));
-[DBetaOpt2(1)] = howellCorrelation(HUB.beta4,5e5,sigma(i));
-[DBetaOpt2(2)] = howellCorrelation(MID.beta4,5e5,sigma(i));
-[DBetaOpt2(3)] = howellCorrelation(TIP.beta4,5e5,sigma(i));
+[deltaBetaOpt1(1)] = howellCorrelation(HUB.beta2,5e5,sigma(i));
+[deltaBetaOpt1(2)] = howellCorrelation(MID.beta2,5e5,sigma(i));
+[deltaBetaOpt1(3)] = howellCorrelation(TIP.beta2,5e5,sigma(i));
+[deltaBetaOpt2(1)] = howellCorrelation(HUB.beta4,5e5,sigma(i));
+[deltaBetaOpt2(2)] = howellCorrelation(MID.beta4,5e5,sigma(i));
+[deltaBetaOpt2(3)] = howellCorrelation(TIP.beta4,5e5,sigma(i));
 
-changeSolidity1(1)=DBetaOpt1(1)-HUB.Dbeta1;  %se <1 aumentare solidity
-changeSolidity1(2)=DBetaOpt1(2)-MID.Dbeta1;  %se >1 diminuire solidity
-changeSolidity1(3)=DBetaOpt1(3)-TIP.Dbeta1;
-changeSolidity2(1)=DBetaOpt2(1)+HUB.Dbeta2;
-changeSolidity2(2)=DBetaOpt2(2)+MID.Dbeta2;
-changeSolidity2(3)=DBetaOpt2(3)+TIP.Dbeta2;
+changeSolidity1(1)=deltaBetaOpt1(1)-HUB.deltaBeta1;  %se <1 aumentare solidity
+changeSolidity1(2)=deltaBetaOpt1(2)-MID.deltaBeta1;  %se >1 diminuire solidity
+changeSolidity1(3)=deltaBetaOpt1(3)-TIP.deltaBeta1;
+changeSolidity2(1)=deltaBetaOpt2(1)+HUB.deltaBeta2;
+changeSolidity2(2)=deltaBetaOpt2(2)+MID.deltaBeta2;
+changeSolidity2(3)=deltaBetaOpt2(3)+TIP.deltaBeta2;
 changeSolidity(:,i) = [changeSolidity1'; changeSolidity2'];
 
 end
 
 [changeBest,index] = min(abs(changeSolidity)')
-
-if changeBest(1) > 1 || changeBest(2) > 1 || changeBest(3) > 1 || changeBest(4) > 1 || changeBest(5) > 1 || changeBest(6) > 1
+maxDeflAllowed = 2;
+if changeBest(1) > maxDeflAllowed || ...
+        changeBest(2) > maxDeflAllowed || ...
+        changeBest(3) > maxDeflAllowed || ...
+        changeBest(4) > maxDeflAllowed || ...
+        changeBest(5) > maxDeflAllowed || ...
+        changeBest(6) > maxDeflAllowed
     disp('intervieni, howell non è ok')
-    
+
     Mrel_tip2
     solidityBest = sigma(index)
-    return 
+    return
 else
 solidityBest = sigma(index)
 Mrel_tip2
 end
-%iterHowell = iterHowell + 1;
-
-
 
 %% New Part
-Re = 3e5;
-mu = 1.81e-5;
 
-c_hub = Re * mu / (rho1 * w1_hub);
-c_mid = Re * mu / (rho1 * w1_mid);
-c_tip = Re * mu / (rho1 * w1_tip);
-
-%if deltaBeta_optimal --> SOMETHING TO DO ON THE SOLIDITY?
-
-%% Skip Howell, Pass to Leiblein
-% Assumptions:
-% etaStage = etaS = 0.85
-% eta_rotor = etaStage
-%
-% Choose:
 th = 0.08;      %thickness 8% of the chord
 c = 0.13;       %chord [m] constant over the span
 
-%number of blades
-sigma_mid = 1;
-s = c / sigma_mid;
 
-n_blades = pi * D_mid / s;
-n_blades = floor(n_blades);
-if rem(n_blades,2)
-    n_blades = n_blades + 1;
+Re1 = 6e5;
+Re2 = 1.5e6;
+mu = 1.81e-5;
+
+%number of blades
+[HUB, MID, TIP, nBlades1] = nBladesFUNC(HUB,MID,TIP,1,rho1,mu,Re1,solidityBest,Dhub,Dmid,Dtip);
+[HUB, MID, TIP, nBlades2] = nBladesFUNC(HUB,MID,TIP,2,[],mu,Re2,solidityBest,Dhub,Dmid,Dtip);
+
+nBlades1
+nBlades2
+
+
+%NEW Howell
+for i = 1 : length(sigma)
+[deltaBetaOpt1(1)] = howellCorrelation(HUB.beta2,5e5,HUB.sigma1);
+[deltaBetaOpt1(2)] = howellCorrelation(MID.beta2,5e5,MID.sigma1);
+[deltaBetaOpt1(3)] = howellCorrelation(TIP.beta2,5e5,TIP.sigma1);
+[deltaBetaOpt2(1)] = howellCorrelation(HUB.beta4,5e5,HUB.sigma2);
+[deltaBetaOpt2(2)] = howellCorrelation(MID.beta4,5e5,MID.sigma2);
+[deltaBetaOpt2(3)] = howellCorrelation(TIP.beta4,5e5,TIP.sigma2);
+
+changeSolidity1(1)=deltaBetaOpt1(1)-HUB.deltaBeta1;  %se <1 aumentare solidity
+changeSolidity1(2)=deltaBetaOpt1(2)-MID.deltaBeta1;  %se >1 diminuire solidity
+changeSolidity1(3)=deltaBetaOpt1(3)-TIP.deltaBeta1;
+changeSolidity2(1)=deltaBetaOpt2(1)+HUB.deltaBeta2;
+changeSolidity2(2)=deltaBetaOpt2(2)+MID.deltaBeta2;
+changeSolidity2(3)=deltaBetaOpt2(3)+TIP.deltaBeta2;
+changeSolidity(:,i) = [changeSolidity1'; changeSolidity2'];
+
 end
 
-s_mid = pi * D_mid / n_blades;
-s_tip = pi * D_tip / n_blades;
-s_hub = pi * D_hub / n_blades;
+[changeBest,~] = min(abs(changeSolidity)')
+maxDeflAllowed = 3;
+if changeBest(1) > maxDeflAllowed || ...
+        changeBest(2) > maxDeflAllowed || ...
+        changeBest(3) > maxDeflAllowed || ...
+        changeBest(4) > maxDeflAllowed || ...
+        changeBest(5) > maxDeflAllowed || ...
+        changeBest(6) > maxDeflAllowed
+    disp('intervieni, howell non è ok')
+end
 
-sigma_mid = c / s_mid; sigma_mid = 1; %imposed!!!!!!
-sigma_tip = c / s_tip; 
-sigma_hub = c / s_hub;
-
-%% Camber angle --> need iteration
-% epsilon = deltaBeta = theta + i - delta
-% DO GRAPHS FOR DIFFERENT ANGLES!!!
-epsilon_hub = deltaBeta_hub;
-epsilon_mid = deltaBeta_mid;
-epsilon_tip = deltaBeta_tip;
-
-%guess
-theta_hub = epsilon_hub;%16;
-theta_mid = epsilon_mid;%35;
-theta_tip = epsilon_tip;%52;2;
-
-
+keyboard
 i = 0;
 maxiter = 100;
 tol = 1e-3;
@@ -171,7 +175,7 @@ err = 0;
 
 while err > tol && i < maxiter || i == 0
 
-    
+
 %% Camber angle --> need iteration
 % epsilon = deltaBeta = theta + i - delta
 

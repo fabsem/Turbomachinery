@@ -6,9 +6,9 @@ function [station leulTot leul1 leul2]=velocityTriangles(v1, v1ax, v2ax, v4ax,S,
     gamma=1.4;
     mdot=100;
 
-maxiter = 1000;    
-    
-v4=150; v2=240; 
+maxiter = 1000;
+
+v4=150; v2=240;
 v2old=1000; v4old=1000;
 
 leulTot=Dhis/etaTT;
@@ -16,15 +16,15 @@ leulTot=Dhis/etaTT;
 iterWork=0;     iterVelocity=[];     errorLeul=1000;
 
 while errorLeul>1e-4
-    
+
   iterWork=iterWork+1;
   leulTotOld=leulTot;
-  
+
      if nargin<15
      leul1=leulTot*work1;
      leul2=leulTot-leul1;
      end
-        
+
 iterVelocity=[iterVelocity 0];   v2axold=1000;   v4old=1000;   v2old=1000;
 
 while abs(v4-v4old)>1e-4 && abs(v2-v2old)>1e-4 && abs(v2ax-v2axold)>1e-4 && iterVelocity(end) < maxiter
@@ -35,32 +35,32 @@ while abs(v4-v4old)>1e-4 && abs(v2-v2old)>1e-4 && abs(v2ax-v2axold)>1e-4 && iter
 
     v2t=leul1/U1;
     v4t=leul2/U2+v2t;
-    
+
     v2=sqrt(v2ax^2+v2t^2);
     v4=sqrt(v4ax^2+v4t^2);
-    
+
     Dhis1=leul1*etaTT-(v2^2-v1^2)/2;
     Dhis2=leul2*etaTT-(v4^2-v2^2)/2;
-    
+
     T2=T1+Dhis1/Cp/etaTT;
     T4=T2+Dhis2/Cp/etaTT;
-    
+
     Beta1=(1+Dhis1/(Cp*T1))^(gamma/(gamma-1));
     Beta2=(1+Dhis2/(Cp*T2))^(gamma/(gamma-1));
-    
+
     P2=Beta1*P1;
     P4=Beta2*P2;
 
     rho2=P2/(R*T2);
     rho4=P4/(R*T4);
-    
+
     v2ax=mdot/(S*rho2);
     v4ax=mdot/(S*rho4);
 end
     leulTot=(Dhis+(v4^2-v1^2)/2)/etaTT;
-    
+
     errorLeul=abs(leulTot-leulTotOld);
-    
+
     if nargin==15
        errorLeul=0;
     end
@@ -83,8 +83,8 @@ beta1=atand(w1t/v1ax);
 beta2=atand(w2t/v2ax);
 beta3=atand(w3t/v2ax);
 beta4=atand(w4t/v4ax);
-Dbeta1=beta2-beta1;
-Dbeta2=beta4-beta3;
+deltaBeta1=beta2-beta1;
+deltaBeta2=beta4-beta3;
 
 alfa1=asind(v1t/v1);
 alfa2=asind(v2t/v2);
@@ -122,8 +122,8 @@ station.beta1=beta1;
 station.beta2=beta2;
 station.beta3=beta3;
 station.beta4=beta4;
-station.Dbeta1=Dbeta1;
-station.Dbeta2=Dbeta2;
+station.deltaBeta1=deltaBeta1;
+station.deltaBeta2=deltaBeta2;
 station.leul1=leul1;
 station.leul2=leul2;
 station.Beta1=Beta1;
@@ -134,4 +134,3 @@ station.iterWork=iterWork;
 station.iterVelocity=iterVelocity;
 end
 end
-
