@@ -1,10 +1,9 @@
-function [station leulTot leul1 leul2]=velocityTriangles(v1, v1ax, v2ax, v4ax,S,P1, T1, U1, U2, etaTT,location,Dhis,work1,leul1,leul2,varargin)
+function [station leulTot leul1 leul2]=velocityTriangles(mdot,alpha1,v1, v1ax, v2ax, v4ax,S,P1, T1, U1, U2, etaTT,location,Dhis,work1,leul1,leul2,varargin)
 
-    v1t=0;
+    v1t=v1 * sin(alpha1);
     Cp=1004.69;
     R=287;
     gamma=1.4;
-    mdot=100;
 
 maxiter = 1000;
 
@@ -20,7 +19,7 @@ while errorLeul>1e-4
   iterWork=iterWork+1;
   leulTotOld=leulTot;
 
-     if nargin<15
+     if nargin<17
      leul1=leulTot*work1;
      leul2=leulTot-leul1;
      end
@@ -61,7 +60,7 @@ end
 
     errorLeul=abs(leulTot-leulTotOld);
 
-    if nargin==15
+    if nargin==17
        errorLeul=0;
     end
 end
@@ -90,7 +89,7 @@ alfa1=asind(v1t/v1);
 alfa2=asind(v2t/v2);
 alfa4=asind(v4t/v4);
 
-plotVelocities(v1ax,v2ax,v4ax,v1,v2,v4,w1,w2,w3,w4,v1t,v2t,v4t,w1t,w2t,w3t,w4t,U1,U2,location)
+%plotVelocities(v1ax,v2ax,v4ax,v1,v2,v4,w1,w2,w3,w4,v1t,v2t,v4t,w1t,w2t,w3t,w4t,U1,U2,location)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 station.v1=v1;

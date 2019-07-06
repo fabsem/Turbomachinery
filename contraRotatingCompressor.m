@@ -61,11 +61,11 @@ U1=[omega*Dhub/2 omega*Dmid/2 omega*Dtip/2];
 U2=[-U1(1)*rotRatio -U1(2)*rotRatio -U1(3)*rotRatio]; %solo se b1=b2
 
 Dhis=Cp*T1*(BetaTot^((gamma-1)/gamma)-1);
-v2ax=v1ax; v4ax=v1ax;
+v2ax=v1ax; v4ax=v1ax; alpha=0;
 
-[MID leulTot leul1 leul2]=velocityTriangles(v1,v1ax,v2ax,v4ax,S,P1,T1,U1(2),U2(2),etaTT,[0 1 0],Dhis,work1);
-[HUB]=velocityTriangles(v1,v1ax,MID.v2ax,MID.v4ax,S,P1,T1,U1(1),U2(1),etaTT,[1 0 0],leulTot,work1,leul1,leul2);
-[TIP]=velocityTriangles(v1,v1ax,MID.v2ax,MID.v4ax,S,P1,T1,U1(3),U2(3),etaTT,[0 0 1],leulTot,work1,leul1,leul2);
+[MID leulTot leul1 leul2]=velocityTriangles(mdot,alpha,v1,v1ax,v2ax,v4ax,S,P1,T1,U1(2),U2(2),etaTT,[0 1 0],Dhis,work1);
+[HUB]=velocityTriangles(mdot,alpha,v1,v1ax,MID.v2ax,MID.v4ax,S,P1,T1,U1(1),U2(1),etaTT,[1 0 0],leulTot,work1,leul1,leul2);
+[TIP]=velocityTriangles(mdot,alpha,v1,v1ax,MID.v2ax,MID.v4ax,S,P1,T1,U1(3),U2(3),etaTT,[0 0 1],leulTot,work1,leul1,leul2);
 
 % check sui numeri di Mach
 Mrel_tip1=TIP.w1/sqrt(gamma*R*T1);
