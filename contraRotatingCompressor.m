@@ -121,8 +121,7 @@ end
 
 %% New Part
 
-th = 0.08;      %thickness 8% of the chord
-c = 0.13;       %chord [m] constant over the span
+
 
 
 Re1 = 6e5;
@@ -167,14 +166,20 @@ if changeBest(1) > maxDeflAllowed || ...
     disp('intervieni, howell non è ok')
 end
 
-keyboard
+
+% CHOICE!!!!!!!!!!!!!!!!
+thick1 = 0.1;      %thickness 10% of the chord
+thick2 = 0.1;
+%chord1 = 0.13;       %chord [m] constant over the span
+%chord2 = 0.13;
+
+%Iteration on CAMBER ANGLE
 i = 0;
 maxiter = 100;
 tol = 1e-3;
 err = 0;
 
 while err > tol && i < maxiter || i == 0
-
 
 %% Camber angle --> need iteration
 % epsilon = deltaBeta = theta + i - delta
@@ -183,20 +188,30 @@ while err > tol && i < maxiter || i == 0
 % FOR NACA 65
 Cl = @(theta) theta / 25;
 
-Cl_hub = Cl(theta_hub);
-Cl_mid = Cl(theta_mid);
-Cl_tip = Cl(theta_tip);
+%theta is the camber angle
+HUB.Cl1 = Cl(HUB.theta1);
+MID.Cl1 = Cl(MID.theta1);
+TIP.Cl1 = Cl(TIP.theta1);
 
-Re = @(rho,u,d) rho * u * d / mu;
+HUB.Cl2 = Cl(HUB.theta2);
+MID.Cl2 = Cl(MID.theta2);
+TIP.Cl2 = Cl(TIP.theta2);
 
-Re_hub = Re((rho1+rho2_hub)/2,(w1_hub + w2_hub)/2,c);
-Re_mid = Re((rho1+rho2_mid)/2,(w1_mid + w2_mid)/2,c);
-Re_tip = Re((rho1+rho2_tip)/2,(w1_tip + w2_tip)/2,c);
+%Re = @(rho,u,d) rho * u * d / mu;
+%
+%Re_hub = Re((rho1+rho2_hub)/2,(w1_hub + w2_hub)/2,HUB.c1);
+%Re_mid = Re((rho1+rho2_mid)/2,(w1_mid + w2_mid)/2,c);
+%Re_tip = Re((rho1+rho2_tip)/2,(w1_tip + w2_tip)/2,c);
 
-
-lieblein;
+lieblein_rot1;
+lieblein_rot2;
 
 end
 
+%keyboard
+checkLoading_rot1;
+checkLoading_rot2;
 
-checkLoading;
+
+%% Losses
+losses;
