@@ -47,5 +47,5 @@ Beta_new = BetaTot + 0.0001;
 if Beta_new > 2
   disp('Non c''è soluzione')
   return
-end
+ end
 end
