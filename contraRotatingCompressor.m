@@ -213,6 +213,25 @@ checkLoading_rot1;
 checkLoading_rot2;
 
 
+%% Tip clearance losses?
+%% Check Re effects
+%% Check Ma effects
+%% Check Blade thickness effects
+
+%% Draw the blade
+
+%Naca65 Profile
+
+%stagger angle
+gamma_hub = beta1_hub + i_opt_hub + theta_hub / 2;
+gamma_mid = beta1_mid + i_opt_mid + theta_mid / 2;
+gamma_tip = beta1_tip + i_opt_tip + theta_tip / 2;
+
+
+run stampapalette.m
+
+
+keyboard
 %% Losses
 %losses;
 

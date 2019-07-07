@@ -118,8 +118,8 @@ while err_axvel_rot1 > tol && iter_fp_rot1 < maxiter || iter_fp_rot1 == 0;
   tip_v2a_old = TIPfp.v2a;
 
   iter_fp_rot1 = iter_fp_rot1 + 1;
-  
-  end
+  TIPfp
+keyboard
 end
 
 
