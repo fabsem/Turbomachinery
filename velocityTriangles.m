@@ -1,6 +1,6 @@
 function [station leulTot leul1 leul2]=velocityTriangles(mdot,alfa1,v1, v1a, v2a, v4a,S,P1, T1, U1, U2, etaTT,location,Dhis,work1,leul1,leul2,varargin)
 
-    v1t=v1 * sin(alfa1);
+    v1t=v1 * sind(alfa1);
     Cp=1004.69;
     R=287;
     gamma=1.4;

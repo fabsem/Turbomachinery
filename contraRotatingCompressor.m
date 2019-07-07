@@ -103,7 +103,7 @@ changeSolidity(:,i) = [changeSolidity1'; changeSolidity2'];
 
 end
 
-[changeBest,index] = min(abs(changeSolidity)')
+[changeBest,index] = min(abs(changeSolidity)');
 maxDeflAllowed = 2;
 if changeBest(1) > maxDeflAllowed || ...
         changeBest(2) > maxDeflAllowed || ...
@@ -214,7 +214,7 @@ checkLoading_rot2;
 
 
 %% Losses
-losses;
+%losses;
 
 %% IGV
 IGV;
