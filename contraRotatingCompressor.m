@@ -1,6 +1,8 @@
 %PATH
 addpath('liebleinCorrelations/')
-
+addpath('howellCorrelations/')
+addpath('losses/')
+addpath('IGV/')
 % DATI
 clear all; close all; clc
 mdot=100; %[kg/s]
@@ -41,8 +43,8 @@ while residual>1e-3 && M1>0
     T1=Tt1/(1+(gamma-1)/2*M1^2);
     v1=sqrt(gamma*R*T1)*M1;
     w1t_tip=-U1_tip;
-    v1ax=v1;
-    w1_tip=sqrt(v1ax^2+w1t_tip^2);
+    v1a=v1;
+    w1_tip=sqrt(v1a^2+w1t_tip^2);
     Mrel_tip_check=w1_tip/sqrt(gamma*R*T1);
     residual=abs(Mw1_tip-Mrel_tip_check);
 end
@@ -51,7 +53,7 @@ clearvars U1_tip residual w1_tip w1t_tip
 
 P1=Pt1*(T1/Tt1)^(gamma/(gamma-1));
 rho1=P1/(R*T1);
-S=mdot/(v1ax*rho1);
+S=mdot/(v1a*rho1);
 Dhub=@(Dhub) S-pi/4*(Dtip^2-Dhub^2);
 Dhub=fzero(Dhub,Dtip);
 b=(Dtip-Dhub)/2;
@@ -61,11 +63,11 @@ U1=[omega*Dhub/2 omega*Dmid/2 omega*Dtip/2];
 U2=[-U1(1)*rotRatio -U1(2)*rotRatio -U1(3)*rotRatio]; %solo se b1=b2
 
 Dhis=Cp*T1*(BetaTot^((gamma-1)/gamma)-1);
-v2ax=v1ax; v4ax=v1ax; alpha=0;
+v2a=v1a; v4a=v1a; alpha=0;
 
-[MID leulTot leul1 leul2]=velocityTriangles(mdot,alpha,v1,v1ax,v2ax,v4ax,S,P1,T1,U1(2),U2(2),etaTT,[0 1 0],Dhis,work1);
-[HUB]=velocityTriangles(mdot,alpha,v1,v1ax,MID.v2ax,MID.v4ax,S,P1,T1,U1(1),U2(1),etaTT,[1 0 0],leulTot,work1,leul1,leul2);
-[TIP]=velocityTriangles(mdot,alpha,v1,v1ax,MID.v2ax,MID.v4ax,S,P1,T1,U1(3),U2(3),etaTT,[0 0 1],leulTot,work1,leul1,leul2);
+[MID leulTot leul1 leul2]=velocityTriangles(mdot,alpha,v1,v1a,v2a,v4a,S,P1,T1,U1(2),U2(2),etaTT,[0 1 0],Dhis,work1);
+[HUB]=velocityTriangles(mdot,alpha,v1,v1a,MID.v2a,MID.v4a,S,P1,T1,U1(1),U2(1),etaTT,[1 0 0],leulTot,work1,leul1,leul2);
+[TIP]=velocityTriangles(mdot,alpha,v1,v1a,MID.v2a,MID.v4a,S,P1,T1,U1(3),U2(3),etaTT,[0 0 1],leulTot,work1,leul1,leul2);
 
 % check sui numeri di Mach
 Mrel_tip1=TIP.w1/sqrt(gamma*R*T1);
@@ -120,8 +122,6 @@ Mrel_tip2
 end
 
 %% New Part
-
-
 
 
 Re1 = 6e5;

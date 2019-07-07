@@ -1,6 +1,6 @@
-function [station leulTot leul1 leul2]=velocityTriangles(mdot,alpha1,v1, v1ax, v2ax, v4ax,S,P1, T1, U1, U2, etaTT,location,Dhis,work1,leul1,leul2,varargin)
+function [station leulTot leul1 leul2]=velocityTriangles(mdot,alfa1,v1, v1a, v2a, v4a,S,P1, T1, U1, U2, etaTT,location,Dhis,work1,leul1,leul2,varargin)
 
-    v1t=v1 * sin(alpha1);
+    v1t=v1 * sin(alfa1);
     Cp=1004.69;
     R=287;
     gamma=1.4;
@@ -26,17 +26,17 @@ while errorLeul>1e-4
 
 iterVelocity=[iterVelocity 0];   v2axold=1000;   v4old=1000;   v2old=1000;
 
-while abs(v4-v4old)>1e-4 && abs(v2-v2old)>1e-4 && abs(v2ax-v2axold)>1e-4 && iterVelocity(end) < maxiter
+while abs(v4-v4old)>1e-4 && abs(v2-v2old)>1e-4 && abs(v2a-v2axold)>1e-4 && iterVelocity(end) < maxiter
     v2old=v2;
-    v2axold=v2ax;
+    v2axold=v2a;
     v4old=v4;
     iterVelocity(end)=iterVelocity(end)+1;
 
     v2t=leul1/U1;
     v4t=leul2/U2+v2t;
 
-    v2=sqrt(v2ax^2+v2t^2);
-    v4=sqrt(v4ax^2+v4t^2);
+    v2=sqrt(v2a^2+v2t^2);
+    v4=sqrt(v4a^2+v4t^2);
 
     Dhis1=leul1*etaTT-(v2^2-v1^2)/2;
     Dhis2=leul2*etaTT-(v4^2-v2^2)/2;
@@ -53,8 +53,8 @@ while abs(v4-v4old)>1e-4 && abs(v2-v2old)>1e-4 && abs(v2ax-v2axold)>1e-4 && iter
     rho2=P2/(R*T2);
     rho4=P4/(R*T4);
 
-    v2ax=mdot/(S*rho2);
-    v4ax=mdot/(S*rho4);
+    v2a=mdot/(S*rho2);
+    v4a=mdot/(S*rho4);
 end
     leulTot=(Dhis+(v4^2-v1^2)/2)/etaTT;
 
@@ -73,15 +73,15 @@ w2t=v2t-U1;
 w3t=v2t-U2;
 w4t=v4t-U2;
 
-w1=sqrt(w1t^2+v1ax^2);
-w2=sqrt(w2t^2+v2ax^2);
-w3=sqrt(w3t^2+v2ax^2);
-w4=sqrt(w4t^2+v4ax^2);
+w1=sqrt(w1t^2+v1a^2);
+w2=sqrt(w2t^2+v2a^2);
+w3=sqrt(w3t^2+v2a^2);
+w4=sqrt(w4t^2+v4a^2);
 
-beta1=atand(w1t/v1ax);
-beta2=atand(w2t/v2ax);
-beta3=atand(w3t/v2ax);
-beta4=atand(w4t/v4ax);
+beta1=atand(w1t/v1a);
+beta2=atand(w2t/v2a);
+beta3=atand(w3t/v2a);
+beta4=atand(w4t/v4a);
 deltaBeta1=beta2-beta1;
 deltaBeta2=beta4-beta3;
 
@@ -95,8 +95,9 @@ alfa4=asind(v4t/v4);
 station.v1=v1;
 station.v2=v2;
 station.v4=v4;
-station.v2ax=v2ax;
-station.v4ax=v4ax;
+station.v1a=v1a;
+station.v2a=v2a;
+station.v4a=v4a;
 station.P2=P2;
 station.T2=T2;
 station.rho2=rho2;
