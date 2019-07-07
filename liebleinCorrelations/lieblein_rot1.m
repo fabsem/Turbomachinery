@@ -30,9 +30,9 @@ i0_tip = Ki_thick_tip * Ki_shape * i010_tip;
 i0_mid = Ki_thick_mid * Ki_shape * i010_mid;
 i0_hub = Ki_thick_hub * Ki_shape * i010_hub;
 
-i_opt_tip = i0_tip + n_lieblein_tip * TIP.theta1;
-i_opt_mid = i0_mid + n_lieblein_mid * MID.theta1;
-i_opt_hub = i0_hub + n_lieblein_hub * HUB.theta1;
+TIP.i_opt1 = i0_tip + n_lieblein_tip * TIP.theta1;
+MID.i_opt1 = i0_mid + n_lieblein_mid * MID.theta1;
+HUB.i_opt1 = i0_hub + n_lieblein_hub * HUB.theta1;
 
 % Outlet deviation angle
 % delta = delta0 + ( m * theta ) / sigma^b
@@ -82,9 +82,9 @@ HUB.delta1 = delta0_hub + m_lieblein_hub * HUB.theta1 / (HUB.sigma1^b_lieblein_h
 %epsilon_mid = theta_mid + i_opt_mid - delta_mid;
 %epsilon_hub = theta_hub + i_opt_hub - delta_hub;
 
-theta_new_hub = HUB.epsilon1 - i_opt_hub + HUB.delta1;
-theta_new_mid = MID.epsilon1 - i_opt_mid + MID.delta1;
-theta_new_tip = TIP.epsilon1 - i_opt_tip + TIP.delta1;
+theta_new_hub = HUB.epsilon1 - HUB.i_opt1 + HUB.delta1;
+theta_new_mid = MID.epsilon1 - MID.i_opt1 + MID.delta1;
+theta_new_tip = TIP.epsilon1 - TIP.i_opt1 + TIP.delta1;
 
 
     err(1) = abs((theta_new_hub - HUB.theta1)/HUB.theta1);
