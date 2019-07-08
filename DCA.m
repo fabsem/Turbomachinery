@@ -1,10 +1,11 @@
 clear all
 close all
+clc
 
 c = 1;
 
 theta = 30;
-tb = 0.1 * c;
+tb = 0.08 * c;
 r0 = 0.01 * c;
 theta_span = -theta:theta;
 
@@ -36,8 +37,30 @@ ycl = y0 - tb/2 - Rl;
 xl = x;
 yl = ycl + sqrt(Rl^2 - x.^2);
 
-plot(x,y)
+%smooth edges
+y_edge0_dx = r0 * sind(theta/2);
+x_edge0_dx = + (c/2 - r0 * cosd(theta/2));
+
+theta_r0 = 0:360;%-100:65;
+x_edge_dx = r0 * cosd(theta_r0) + x_edge0_dx;
+y_edge_dx = r0 * sind(theta_r0) + y_edge0_dx;
+
+y_edge0_sx = r0 * sind(theta/2);
+x_edge0_sx = - (c/2 - r0 * cosd(theta/2));
+
+theta_r0 = 0:360;%115:260;
+x_edge_sx = r0 * cosd(theta_r0) + x_edge0_sx;
+y_edge_sx = r0 * sind(theta_r0) + y_edge0_sx;
+
+plot(x,y,'--')
 hold on
-plot(xu,yu)
-plot(xl,yl)
+plot(xu,yu,'linewidth',3)
+plot(xl,yl,'linewidth',3)
+plot(x_edge_dx,y_edge_dx)
+plot(x_edge_sx,y_edge_sx)
+title(['DCA Profile - c = ', num2str(c),', t = ',num2str(tb),'c'])
 axis equal
+
+%% Output vector
+x = [flip(xu), xl]';
+y = [flip(yu), yl]';
