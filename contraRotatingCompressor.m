@@ -3,12 +3,14 @@ addpath('liebleinCorrelations/')
 addpath('howellCorrelations/')
 addpath('losses/')
 addpath('IGV/')
+addpath('traupel/')
 % DATI
 clear all; close all; clc
 mdot=100; %[kg/s]
 Pt1=100000; %[Pa]
 Tt1=300; %[K]
 gamma=1.4; %Specific heat ratio
+GAMMA=(gamma-1)/gamma;
 R=287;
 Cp=1004.69;
 BetaTot=1.45; %compression ratio
@@ -22,10 +24,10 @@ BetaTot=1.45; %compression ratio
 
 % PARAMETRI
 Dtip=1;
-etaTT=0.85;
+eta1=0.85;
+eta2=0.85;
 
-
-Mw1_tip=0.773;%0.7823;
+Mw1_tip=0.8;%0.773;%0.7823;
 work1=0.4766;%0.5;%0.3;%0.3330;%0.3317;%0.3387;%0.339;%0.3177;%0.3; %lavoro percentuale sul primo rotore
 rotRatio=0.78;%1.2455;%1.2574;%1.5;%1.3;   %se rotRatio cresce leul2 cresce ma M2rel cresce
 n=3000;%2870;%2800;%2848;%3000; %se n cresce leul1 cresce, Beta1 deve essere aumentato per non essere nullo all'hub
@@ -62,12 +64,12 @@ Dmid=(Dtip+Dhub)/2;
 U1=[omega*Dhub/2 omega*Dmid/2 omega*Dtip/2];
 U2=[-U1(1)*rotRatio -U1(2)*rotRatio -U1(3)*rotRatio]; %solo se b1=b2
 
-Dhis=Cp*T1*(BetaTot^((gamma-1)/gamma)-1);
+Dhis=Cp*T1*(BetaTot^GAMMA-1);
 v2a=v1a; v4a=v1a; alpha=0;
 
-[MID leulTot leul1 leul2]=velocityTriangles(mdot,alpha,v1,v1a,v2a,v4a,S,P1,T1,U1(2),U2(2),etaTT,[0 1 0],Dhis,work1);
-[HUB]=velocityTriangles(mdot,alpha,v1,v1a,MID.v2a,MID.v4a,S,P1,T1,U1(1),U2(1),etaTT,[1 0 0],leulTot,work1,leul1,leul2);
-[TIP]=velocityTriangles(mdot,alpha,v1,v1a,MID.v2a,MID.v4a,S,P1,T1,U1(3),U2(3),etaTT,[0 0 1],leulTot,work1,leul1,leul2);
+[MID leulTot leul1 leul2]=velocityTriangles(mdot,alpha,v1,v1a,v2a,v4a,S,P1,T1,U1(2),U2(2),eta1,eta2,[0 1 0],Dhis,work1);
+[HUB]=velocityTriangles(mdot,alpha,v1,v1a,MID.v2a,MID.v4a,S,P1,T1,U1(1),U2(1),eta1,eta2,[1 0 0],leulTot,work1,leul1,leul2);
+[TIP]=velocityTriangles(mdot,alpha,v1,v1a,MID.v2a,MID.v4a,S,P1,T1,U1(3),U2(3),eta1,eta2,[0 0 1],leulTot,work1,leul1,leul2);
 
 % check sui numeri di Mach
 Mrel_tip1=TIP.w1/sqrt(gamma*R*T1);
@@ -104,7 +106,7 @@ changeSolidity(:,i) = [changeSolidity1'; changeSolidity2'];
 end
 
 [changeBest,index] = min(abs(changeSolidity)');
-maxDeflAllowed = 2;
+maxDeflAllowed = 3;
 if changeBest(1) > maxDeflAllowed || ...
         changeBest(2) > maxDeflAllowed || ...
         changeBest(3) > maxDeflAllowed || ...
@@ -115,7 +117,7 @@ if changeBest(1) > maxDeflAllowed || ...
 
     Mrel_tip2
     solidityBest = sigma(index)
-    return
+    %return
 else
 solidityBest = sigma(index)
 Mrel_tip2
@@ -202,7 +204,7 @@ TIP.Cl2 = Cl(TIP.theta2);
 %Re_hub = Re((rho1+rho2_hub)/2,(w1_hub + w2_hub)/2,HUB.c1);
 %Re_mid = Re((rho1+rho2_mid)/2,(w1_mid + w2_mid)/2,c);
 %Re_tip = Re((rho1+rho2_tip)/2,(w1_tip + w2_tip)/2,c);
-
+%keyboard
 lieblein_rot1;
 lieblein_rot2;
 
@@ -213,27 +215,64 @@ checkLoading_rot1;
 checkLoading_rot2;
 
 
-%% Tip clearance losses?
-%% Check Re effects
-%% Check Ma effects
-%% Check Blade thickness effects
+%% Choose Profiles for HUB, MID, TIP
+profile = {'DCA', 'DCA', 'DCA',...
+           'DCA', 'DCA', 'DCA'};
+
+%% Losses
+
+etaTT_new = 1;
+losses = 0;
+
+%% Profile Losses
+%profileLosses;
+HUB.Re1 = 1e6;
+MID.Re1 = 1e6;
+TIP.Re1 = 1e6;
+[HUB.Yprofile1, MID.Yprofile1, TIP.Yprofile1] = profileLosses_rot1('traupel',profile, HUB, MID, TIP);
+[HUB.Yprofile2, MID.Yprofile2, TIP.Yprofile2] = profileLosses_rot2('traupel',profile, HUB, MID, TIP);
+
+%% Tip clearance / Leakage losses
+
+
+%% Secondary Losses
+
+
+%% Annulus Losses
+
+
+%% Disk Friction
+delta = 0.002; %gap
+[zetaD] = diskFrictionLosses(delta,Dhub,mdot,S,U1,U2,rho1,b,Cp,HUB,eta1,T1)
+
+
+%% Total-to-Total Efficiency
+deltaHtis = Cp * T1 * (BetaTot^GAMMA - 1) + (MID.v4^2 - MID.v1^2)/2;
+etaTT = deltaHtis/leulTot;
+
+%% Check on efficiency
+etaTT_new = 1 - losses;
+err_efficiency = abs(etaTT - (1 - losses))/etaTT;
 
 %% Draw the blade
 
 %Naca65 Profile
 
 %stagger angle
-gamma_hub = beta1_hub + i_opt_hub + theta_hub / 2;
-gamma_mid = beta1_mid + i_opt_mid + theta_mid / 2;
-gamma_tip = beta1_tip + i_opt_tip + theta_tip / 2;
+%gamma_hub = beta1_hub + i_opt_hub + theta_hub / 2;
+%gamma_mid = beta1_mid + i_opt_mid + theta_mid / 2;
+%gamma_tip = beta1_tip + i_opt_tip + theta_tip / 2;
 
 
-run stampapalette.m
+%run stampapalette.m
 
+
+etaTOT= (( (MID.Beta1*MID.Beta2)^(GAMMA) - 1)*T1*eta1*eta2 ) / (   T1*eta2*(MID.Beta1^GAMMA-1) +  MID.T2*eta1*(MID.Beta2^GAMMA-1)   );
 
 keyboard
 %% Losses
 %losses;
 
+
 %% IGV
-IGV;
+%IGV;

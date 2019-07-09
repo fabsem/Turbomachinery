@@ -10,7 +10,3 @@ TIP.DiffFact1 = DiffFact(TIP.w1,TIP.w2,TIP.w1t,TIP.w2t,TIP.sigma1);
 HUB.theta_c1 = thetaC_Diff(HUB.DiffFact1);
 MID.theta_c1 = thetaC_Diff(MID.DiffFact1);
 TIP.theta_c1 = thetaC_Diff(TIP.DiffFact1);
-
-HUB.Yprofile1 = profileLossesLieblein(HUB.theta_c1,HUB.sigma1,HUB.beta1,HUB.beta2);
-MID.Yprofile1 = profileLossesLieblein(MID.theta_c1,MID.sigma1,MID.beta1,MID.beta2);
-TIP.Yprofile1 = profileLossesLieblein(TIP.theta_c1,TIP.sigma1,TIP.beta1,TIP.beta2);

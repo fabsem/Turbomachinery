@@ -1,16 +1,16 @@
-function [station leulTot leul1 leul2]=velocityTriangles(mdot,alfa1,v1, v1a, v2a, v4a,S,P1, T1, U1, U2, etaTT,location,Dhis,work1,leul1,leul2,varargin)
+function [station leulTot leul1 leul2]=velocityTriangles(mdot,alfa1,v1, v1a, v2a, v4a,S,P1, T1, U1, U2, eta1,eta2,location,Dhis,work1,leul1,leul2,varargin)
 
     v1t=v1 * sind(alfa1);
     Cp=1004.69;
     R=287;
     gamma=1.4;
-
+    GAMMA=(gamma-1)/gamma;
 maxiter = 1000;
 
 v4=150; v2=240;
 v2old=1000; v4old=1000;
 
-leulTot=Dhis/etaTT;
+leulTot=Dhis/eta1;
 
 iterWork=0;     iterVelocity=[];     errorLeul=1000;
 
@@ -19,7 +19,7 @@ while errorLeul>1e-4
   iterWork=iterWork+1;
   leulTotOld=leulTot;
 
-     if nargin<17
+     if nargin<18
      leul1=leulTot*work1;
      leul2=leulTot-leul1;
      end
@@ -38,11 +38,11 @@ while abs(v4-v4old)>1e-4 && abs(v2-v2old)>1e-4 && abs(v2a-v2axold)>1e-4 && iterV
     v2=sqrt(v2a^2+v2t^2);
     v4=sqrt(v4a^2+v4t^2);
 
-    Dhis1=leul1*etaTT-(v2^2-v1^2)/2;
-    Dhis2=leul2*etaTT-(v4^2-v2^2)/2;
+    Dhis1=leul1*eta1-(v2^2-v1^2)/2;
+    Dhis2=leul2*eta2-(v4^2-v2^2)/2;
 
-    T2=T1+Dhis1/Cp/etaTT;
-    T4=T2+Dhis2/Cp/etaTT;
+    T2=T1+Dhis1/Cp/eta1;
+    T4=T2+Dhis2/Cp/eta2;
 
     Beta1=(1+Dhis1/(Cp*T1))^(gamma/(gamma-1));
     Beta2=(1+Dhis2/(Cp*T2))^(gamma/(gamma-1));
@@ -56,11 +56,12 @@ while abs(v4-v4old)>1e-4 && abs(v2-v2old)>1e-4 && abs(v2a-v2axold)>1e-4 && iterV
     v2a=mdot/(S*rho2);
     v4a=mdot/(S*rho4);
 end
-    leulTot=(Dhis+(v4^2-v1^2)/2)/etaTT;
+    etaTOT= (( (Beta1*Beta2)^(GAMMA) - 1)*T1*eta1*eta2 ) / (   T1*eta2*(Beta1^GAMMA-1) +  T2*eta1*(Beta2^GAMMA-1)   );
+    leulTot=(Dhis+(v4^2-v1^2)/2)/etaTOT;
 
     errorLeul=abs(leulTot-leulTotOld);
 
-    if nargin==17
+    if nargin==18
        errorLeul=0;
     end
 end
@@ -107,6 +108,10 @@ station.rho4=rho4;
 station.v1t=v1t;
 station.v2t=v2t;
 station.v4t=v4t;
+station.Mw1=w1/sqrt(gamma*R*T1);
+station.Mw2=w2/sqrt(gamma*R*T2);
+station.Mw3=w3/sqrt(gamma*R*T2);
+station.Mw4=w4/sqrt(gamma*R*T4);
 station.w1=w1;
 station.w2=w2;
 station.w3=w3;

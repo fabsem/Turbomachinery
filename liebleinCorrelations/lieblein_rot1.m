@@ -2,7 +2,7 @@
 % i = i0 + n*theta
 % i0 = Kth * Kshape * i0.10
 
-profile = 'naca65';
+profile = 'DCA';
 
 % DO GRAPHS --> [i010] = liblein_incidence010(beta1,sigma)
 i010_tip = lieblein_incidence010(TIP.beta1,TIP.sigma1);%4;
