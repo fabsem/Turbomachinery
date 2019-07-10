@@ -83,6 +83,11 @@ hub_Yprofile1 = CHI_Re_hub * CHI_Ma_hub * Zeta0_hub;
 mid_Yprofile1 = CHI_Re_mid * CHI_Ma_mid * Zeta0_mid;
 tip_Yprofile1 = CHI_Re_tip * CHI_Ma_tip * Zeta0_tip;
 
+% Scaling to obtain absolute values from percentage
+hub_Yprofile1 = hub_Yprofile1 * 0.01;
+mid_Yprofile1 = mid_Yprofile1 * 0.01;
+tip_Yprofile1 = tip_Yprofile1 * 0.01;
+
 else
   disp('No profile losses criterion selected')
   return

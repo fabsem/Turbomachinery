@@ -28,4 +28,7 @@ PSI = 2 * w_is / U_max^2;
 
   zetaD = (8 * Cm * Dhub) / (pi * PHI * PSI * b);
 
+  % Scaling to obtain absolute value from percentage
+  zetaD = zetaD * 0.01;
+
 end

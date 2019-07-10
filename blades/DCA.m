@@ -1,6 +1,6 @@
-clear all
-close all
-clc
+%clear all
+%close all
+%clc
 
 c = 1;
 
@@ -60,7 +60,7 @@ plot(x_edge_dx,y_edge_dx)
 plot(x_edge_sx,y_edge_sx)
 title(['DCA Profile - c = ', num2str(c),', t = ',num2str(tb),'c'])
 axis equal
-
+close all
 %% Output vector
 x = [flip(xu), xl]';
 y = [flip(yu), yl]';

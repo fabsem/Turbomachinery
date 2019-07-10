@@ -38,7 +38,7 @@ text((v2t+w2t)/2,v2ax,'U1')
 %legend('v1','w1','U1','v2','w2','U1')
 title(['Rotor 1 ',location])
 set(gca, 'YDir','reverse')
-axis([-200 300 0 200])
+axis([-200 300 0 max(v1ax,v2ax)+50])
 
 subplot(2,1,2)
 vectarrow([0 0],V2)
