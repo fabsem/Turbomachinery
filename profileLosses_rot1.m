@@ -6,29 +6,8 @@ hub_Yprofile1 = profileLossesLieblein(HUB.theta_c1,HUB.sigma1,HUB.beta1,HUB.beta
 mid_Yprofile1 = profileLossesLieblein(MID.theta_c1,MID.sigma1,MID.beta1,MID.beta2);
 tip_Yprofile1 = profileLossesLieblein(TIP.theta_c1,TIP.sigma1,TIP.beta1,TIP.beta2);
 
-if strcmp(name,'leiblein')
-%% Reynolds Correction
-if Re > 3e5
-  correction_Re = 0;
-else
-  %Grafico, non c'è quindi fisso
-  correction_Re = 0.05;
-end
 
-%% Mach Correction
-if Ma < 0.7
-  correction_Ma = 0.015;
-else
-  %Grafico, non c'è ancora quindi fisso
-end
-
-%% Thickness Correction for Re
-
-%% Thickness Correction for Ma
-
-Yprofile = Yprofile - correction;
-
-elseif strcmp(name,'traupel')
+%elseif strcmp(name,'traupel')
 %% TRAUPEL
 Zeta0_hub = hub_Yprofile1;
 Zeta0_mid = mid_Yprofile1;
@@ -87,11 +66,6 @@ tip_Yprofile1 = CHI_Re_tip * CHI_Ma_tip * Zeta0_tip;
 hub_Yprofile1 = hub_Yprofile1 * 0.01;
 mid_Yprofile1 = mid_Yprofile1 * 0.01;
 tip_Yprofile1 = tip_Yprofile1 * 0.01;
-
-else
-  disp('No profile losses criterion selected')
-  return
-end
 
 
 end

@@ -1,13 +1,11 @@
-%PATH
-addpath('liebleinCorrelations/')
-addpath('howellCorrelations/')
-addpath('losses/')
-addpath('IGV/')
-addpath('traupel/')
-addpath('blades/')
+clear all;
+close all;
+clc
 
-% DATI
-clear all; close all; clc
+%PATH
+addPaths;
+
+% DATA
 mdot=100; %[kg/s]
 Pt1=100000; %[Pa]
 Tt1=300; %[K]
@@ -29,6 +27,8 @@ Dtip=1;
 eta1=0.80;
 eta2=0.85;
 
+Re1 = 6e5;
+Re2 = 1.5e6;
 Mw1_tip=0.8;%0.773;%0.7823;
 work1=0.4111;%0.4766;%0.5;%0.3;%0.3330;%0.3317;%0.3387;%0.339;%0.3177;%0.3; %lavoro percentuale sul primo rotore
 rotRatio=0.8845;%0.78;%1.2455;%1.2574;%1.5;%1.3;   %se rotRatio cresce leul2 cresce ma M2rel cresce
@@ -128,21 +128,20 @@ if changeBest(1) > maxDeflAllowed || ...
         changeBest(4) > maxDeflAllowed || ...
         changeBest(5) > maxDeflAllowed || ...
         changeBest(6) > maxDeflAllowed
-    disp('intervieni, howell non è ok')
+    disp('howell_1 non è ok')
 
     Mrel_tip2
-    solidityBest = sigma(index)
+    solidityBest = sigma(index);
     %return
 else
-solidityBest = sigma(index)
+solidityBest = sigma(index);
 Mrel_tip2
 end
 
+changeBest
+
 %% New Part
 
-
-Re1 = 6e5;
-Re2 = 1.5e6;
 mu = 1.81e-5;
 
 %number of blades
@@ -180,7 +179,7 @@ if changeBest(1) > maxDeflAllowed || ...
         changeBest(4) > maxDeflAllowed || ...
         changeBest(5) > maxDeflAllowed || ...
         changeBest(6) > maxDeflAllowed
-    disp('intervieni, howell non è ok')
+    disp('howell_2 non è ok')
 end
 
 
@@ -250,9 +249,7 @@ losses = 0;
 
 %% Profile Losses
 %profileLosses;
-HUB.Re1 = 1e6;
-MID.Re1 = 1e6;
-TIP.Re1 = 1e6;
+
 [HUB.Yprofile1, MID.Yprofile1, TIP.Yprofile1] = profileLosses_rot1('traupel',profile, HUB, MID, TIP);
 [HUB.Yprofile2, MID.Yprofile2, TIP.Yprofile2] = profileLosses_rot2('traupel',profile, HUB, MID, TIP);
 
@@ -278,21 +275,22 @@ delta = 2e-3; % gap between disks
 
 %% Overall Losses Combination (this fromula from Y to Zeta then to deltaEta)
 % Yprofile --> ZetaP --> deltaEta_profile
-[HUB.deltaEta_profile1] = deltaEta_calc('Y',HUB.Yprofile1,[],HUB.Mw2,P1,HUB.P2,T1,HUB.T2,HUB.Beta1,Pt1,v1);
-[MID.deltaEta_profile1] = deltaEta_calc('Y',MID.Yprofile1,[],MID.Mw2,P1,MID.P2,T1,MID.T2,MID.Beta1,Pt1,v1);
-[TIP.deltaEta_profile1] = deltaEta_calc('Y',TIP.Yprofile1,[],TIP.Mw2,P1,TIP.P2,T1,TIP.T2,TIP.Beta1,Pt1,v1);
+[HUB.deltaEta_profile1] = deltaEta_calc('Y',HUB.Yprofile1,[],HUB.Mw2,P1,HUB.P2,T1,HUB.Beta1,Pt1,v1);
+[MID.deltaEta_profile1] = deltaEta_calc('Y',MID.Yprofile1,[],MID.Mw2,P1,MID.P2,T1,MID.Beta1,Pt1,v1);
+[TIP.deltaEta_profile1] = deltaEta_calc('Y',TIP.Yprofile1,[],TIP.Mw2,P1,TIP.P2,T1,TIP.Beta1,Pt1,v1);
 
-[HUB.deltaEta_profile2] = deltaEta_calc('Y',HUB.Yprofile2,[],HUB.Mw4,HUB.P2,HUB.P4,HUB.T2,HUB.T4,HUB.Beta2,HUB.Pt2,HUB.v2);
-[MID.deltaEta_profile2] = deltaEta_calc('Y',MID.Yprofile2,[],MID.Mw4,MID.P2,MID.P4,MID.T2,MID.T4,MID.Beta2,MID.Pt2,MID.v2);
-[TIP.deltaEta_profile2] = deltaEta_calc('Y',TIP.Yprofile2,[],TIP.Mw4,TIP.P2,TIP.P4,TIP.T2,TIP.T4,TIP.Beta2,TIP.Pt2,TIP.v2);
+[HUB.deltaEta_profile2] = deltaEta_calc('Y',HUB.Yprofile2,[],HUB.Mw4,HUB.P2,HUB.P4,HUB.T2,HUB.Beta2,HUB.Pt2,HUB.v2);
+[MID.deltaEta_profile2] = deltaEta_calc('Y',MID.Yprofile2,[],MID.Mw4,MID.P2,MID.P4,MID.T2,MID.Beta2,MID.Pt2,MID.v2);
+[TIP.deltaEta_profile2] = deltaEta_calc('Y',TIP.Yprofile2,[],TIP.Mw4,TIP.P2,TIP.P4,TIP.T2,TIP.Beta2,TIP.Pt2,TIP.v2);
 
 % zetaEW --> deltaEta_endwall
-[deltaEta_endwall1] = deltaEta_calc('Z',[],zetaEW1,HUB.M2,P1,HUB.P2,T1,HUB.T2,HUB.Beta1,Pt1,HUB.v1);
-[deltaEta_endwall2] = deltaEta_calc('Z',[],zetaEW2,HUB.M4,HUB.P2,HUB.P4,HUB.T2,HUB.T4,HUB.Beta2,HUB.Pt2,HUB.v2);
+[deltaEta_endwall1] = deltaEta_calc('Z',[],zetaEW1,HUB.M2,P1,HUB.P2,T1,HUB.Beta1,Pt1,HUB.v1);
+[deltaEta_endwall2] = deltaEta_calc('Z',[],zetaEW2,HUB.M4,HUB.P2,HUB.P4,HUB.T2,HUB.Beta2,HUB.Pt2,HUB.v2);
+
+[deltaEta_diskFriction] = deltaEta_calc('Z',[],zetaD,[],P1,[],T1,BetaTot,Pt1,v1);
 
 eta1 = 1-((HUB.deltaEta_profile1 + MID.deltaEta_profile1 + TIP.deltaEta_profile1)/3 + deltaEta_endwall1 + deltaEta_leakage1);
 eta2 = 1-((HUB.deltaEta_profile2 + MID.deltaEta_profile2 + TIP.deltaEta_profile2)/3 + deltaEta_endwall2 + deltaEta_leakage2);
-
 
 
 %% Total-to-Total Efficiency
@@ -300,7 +298,7 @@ deltaHtis = Cp * T1 * (BetaTot^GAMMA - 1) + (MID.v4^2 - MID.v1^2)/2;
 etaTT = deltaHtis/leulTot;
 
 %% Check on efficiency
-etaTOT= (( (MID.Beta1*MID.Beta2)^(GAMMA) - 1)*T1*eta1*eta2 ) / (   T1*eta2*(MID.Beta1^GAMMA-1) +  MID.T2*eta1*(MID.Beta2^GAMMA-1)   );
+etaTOT= (( (MID.Beta1*MID.Beta2)^(GAMMA) - 1)*T1*eta1*eta2 ) / (   T1*eta2*(MID.Beta1^GAMMA-1) +  MID.T2*eta1*(MID.Beta2^GAMMA-1)   ) - deltaEta_diskFriction;
 err_efficiency = abs(etaTT - etaTOT)/etaTT;
 
 
@@ -311,12 +309,14 @@ end
 
 
 %% Draw the blade
-plotVelocities(HUB.v1a,HUB.v2a,HUB.v4a,HUB.v1,HUB.v2,HUB.v4,HUB.w1,HUB.w2,HUB.w3,HUB.w4,HUB.v1t,HUB.v2t,HUB.v4t,HUB.w1t,HUB.w2t,HUB.w3t,HUB.w4t,U1(1),U2(1),[1 0 0])
-plotVelocities(MID.v1a,MID.v2a,MID.v4a,MID.v1,MID.v2,MID.v4,MID.w1,MID.w2,MID.w3,MID.w4,MID.v1t,MID.v2t,MID.v4t,MID.w1t,MID.w2t,MID.w3t,MID.w4t,U1(2),U2(2),[0 1 0])
-plotVelocities(TIP.v1a,TIP.v2a,TIP.v4a,TIP.v1,TIP.v2,TIP.v4,TIP.w1,TIP.w2,TIP.w3,TIP.w4,TIP.v1t,TIP.v2t,TIP.v4t,TIP.w1t,TIP.w2t,TIP.w3t,TIP.w4t,U1(3),U2(3),[0 0 1])
+%plotVelocities(HUB.v1a,HUB.v2a,HUB.v4a,HUB.v1,HUB.v2,HUB.v4,HUB.w1,HUB.w2,HUB.w3,HUB.w4,HUB.v1t,HUB.v2t,HUB.v4t,HUB.w1t,HUB.w2t,HUB.w3t,HUB.w4t,U1(1),U2(1),[1 0 0])
+%plotVelocities(MID.v1a,MID.v2a,MID.v4a,MID.v1,MID.v2,MID.v4,MID.w1,MID.w2,MID.w3,MID.w4,MID.v1t,MID.v2t,MID.v4t,MID.w1t,MID.w2t,MID.w3t,MID.w4t,U1(2),U2(2),[0 1 0])
+%plotVelocities(TIP.v1a,TIP.v2a,TIP.v4a,TIP.v1,TIP.v2,TIP.v4,TIP.w1,TIP.w2,TIP.w3,TIP.w4,TIP.v1t,TIP.v2t,TIP.v4t,TIP.w1t,TIP.w2t,TIP.w3t,TIP.w4t,U1(3),U2(3),[0 0 1])
 
 printBlades('DCA',HUB.gamma1,MID.gamma1,TIP.gamma1,HUB.c1,MID.c1,TIP.c1,b,HUB.theta1,MID.theta1,TIP.theta1)
 printBlades('DCA',HUB.gamma2,MID.gamma2,TIP.gamma2,HUB.c2,MID.c2,TIP.c2,b,HUB.theta2,MID.theta2,TIP.theta2)
+
+
 
 %Naca65 Profile
 %run stampapalette.m
@@ -326,4 +326,4 @@ printBlades('DCA',HUB.gamma2,MID.gamma2,TIP.gamma2,HUB.c2,MID.c2,TIP.c2,b,HUB.th
 
 
 %% IGV
-IGV;
+%IGV;

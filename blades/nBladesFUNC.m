@@ -48,8 +48,8 @@ if rotor==1
   nBlades = nBlades1;
 
   HUB.Re1 = rho * HUB.w1 * Dhub / mu;
-  MID.Re1 = Re;
-  TIP.Re1 = Re;
+  MID.Re1 = rho * MID.w1 * Dhub / mu;
+  TIP.Re1 = rho * TIP.w1 * Dhub / mu;
 
 elseif rotor==2
   HUB.c2 = Re * mu / (HUB.rho2 * HUB.w3);
@@ -87,9 +87,9 @@ elseif rotor==2
 
   nBlades=nBlades2;
 
-  HUB.Re2 = Re;
-  MID.Re2 = Re;
-  TIP.Re2 = Re;
+  HUB.Re2 = HUB.rho2 * HUB.w3 * Dhub / mu;
+  MID.Re2 = MID.rho2 * MID.w3 * Dhub / mu;
+  TIP.Re2 = TIP.rho2 * TIP.w3 * Dhub / mu;
 
 end
 

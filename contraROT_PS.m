@@ -12,12 +12,12 @@ addpath('traupel/')
 addpath('blades/')
 
 %% Optimization
-%work rotRatio n Mw1_tip
-lb = [0.3 0.8 2600 0.7];
-ub = [0.7 1.5 3800 0.8];
+%work rotRatio n Mw1_tip Re1 Re2
+lb = [0.3 0.8 2600 0.7 5e5 5e5];
+ub = [0.7 1.5 3800 0.8 2e6 2e6];
 
 fun = @contraROTTO;
-nvars = 4;
+nvars = 6;
 
 %Starts ParallelPool for Parallel Computation
 %parpool;

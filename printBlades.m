@@ -16,6 +16,11 @@ y = [0.00126000000000000;0.00134200000000000;0.00158700000000000;0.0019940000000
 
 elseif strcmp(profile,'DCA')
 
+    % Due to different reference, invert the stagger
+    gamma_hub = gamma_hub * -1;
+    gamma_mid = gamma_mid * -1;
+    gamma_tip = gamma_tip * -1;
+    
 [x1,y1] = bladeMaker(profile,theta_hub,c_hub);
 [x2,y2] = bladeMaker(profile,theta_mid,c_mid);
 [x3,y3] = bladeMaker(profile,theta_tip,c_tip);
@@ -23,15 +28,15 @@ elseif strcmp(profile,'DCA')
 scale = 1;%/c_hub;
 
 figure
-plot3(linspace(-c_hub/2,c_hub/2) * cosd(gamma_hub), linspace(-c_hub/2,c_hub/2) * sind(gamma_hub), zeros(1,100))
+%plot3(linspace(-c_hub/2,c_hub/2) * cosd(gamma_hub), linspace(-c_hub/2,c_hub/2) * sind(gamma_hub), zeros(1,100))
 hold on
-plot3(linspace(-c_mid/2,c_mid/2) * cosd(gamma_mid), linspace(-c_mid/2,c_mid/2) * sind(gamma_mid), ones(1,100) * b/2)
-plot3(linspace(-c_tip/2,c_tip/2) * cosd(gamma_tip), linspace(-c_tip/2,c_tip/2) * sind(gamma_tip), ones(1,100) * b)
+%plot3(linspace(-c_mid/2,c_mid/2) * cosd(gamma_mid), linspace(-c_mid/2,c_mid/2) * sind(gamma_mid), ones(1,100) * b/2)
+%plot3(linspace(-c_tip/2,c_tip/2) * cosd(gamma_tip), linspace(-c_tip/2,c_tip/2) * sind(gamma_tip), ones(1,100) * b)
 plot3(x1./scale .* cosd(gamma_hub) - y1./scale .* sind(gamma_hub) ,x1./scale .* sind(gamma_hub) + y1./scale .* cosd(gamma_hub),zeros(1,length(x1)))
 plot3(x2./scale .* cosd(gamma_mid) - y2./scale .* sind(gamma_mid) ,x2./scale .* sind(gamma_mid) + y2./scale .* cosd(gamma_mid),ones(1,length(x1)) * b/2)
 plot3(x3./scale .* cosd(gamma_tip) - y3./scale .* sind(gamma_tip) ,x3./scale .* sind(gamma_tip) + y3./scale .* cosd(gamma_tip),ones(1,length(x1)) * b)
-surface([x1./scale .* cosd(gamma_hub) - y1./scale .* sind(gamma_hub), x2./scale .* cosd(gamma_mid) - y2./scale .* sind(gamma_mid)], [x2./scale .* sind(gamma_mid) + y2./scale .* cosd(gamma_mid), x3./scale .* sind(gamma_tip) + y3./scale .* cosd(gamma_tip)],[zeros(1,length(x1))', ones(1,length(x1))' * b/2])
-surface([x1./scale .* cosd(gamma_hub) - y1./scale .* sind(gamma_hub), x2./scale .* cosd(gamma_mid) - y2./scale .* sind(gamma_mid)],[x2./scale .* sind(gamma_mid) + y2./scale .* cosd(gamma_mid),x3./scale .* sind(gamma_tip) + y3./scale .* cosd(gamma_tip)],[ones(1,length(x1))' * b/2,  ones(1,length(x1))' * b])
+surface([x1./scale .* cosd(gamma_hub) - y1./scale .* sind(gamma_hub), x2./scale .* cosd(gamma_mid) - y2./scale .* sind(gamma_mid)], [x1./scale .* sind(gamma_hub) + y1./scale .* cosd(gamma_hub), x2./scale .* sind(gamma_mid) + y2./scale .* cosd(gamma_mid)],[zeros(1,length(x1))', ones(1,length(x1))' * b/2])
+surface([x2./scale .* cosd(gamma_mid) - y2/scale .* sind(gamma_mid), x3./scale .* cosd(gamma_tip) - y3./scale .* sind(gamma_tip)],[x2./scale .* sind(gamma_mid) + y2./scale .* cosd(gamma_mid),x3./scale .* sind(gamma_tip) + y3./scale .* cosd(gamma_tip)],[ones(1,length(x1))' * b/2,  ones(1,length(x1))' * b])
 axis equal
 end
 end

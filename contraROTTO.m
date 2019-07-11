@@ -17,6 +17,9 @@ Dtip=1;
 Mw1_tip=param(4);
 eta1=0.80;
 eta2=0.85;
+Re1 = param(5);
+Re2 = param(6);
+
 
 work1=param(1); %lavoro percentuale sul primo rotore
 rotRatio=param(2);   %se rotRatio cresce leul2 cresce ma M2rel cresce
@@ -67,7 +70,9 @@ tol = 1e-2;
 err_efficiency = 0;
 
 while err_efficiency > tol && i_eta < maxiter || i_eta == 0
-
+nBlades1 = 1;
+nBlades2 = 1;
+    
 [MID leulTot leul1 leul2]=velocityTriangles(mdot,alpha,v1,v1a,v2a,v4a,S,P1,T1,U1(2),U2(2),eta1,eta2,[0 1 0],Dhis,work1);
 if ~isreal(MID.v2t)
     best = 100;
@@ -143,8 +148,7 @@ end
 %% New Part
 
 
-Re1 = 6e5;
-Re2 = 1.5e6;
+
 mu = 1.81e-5;
 
 %number of blades
@@ -154,6 +158,9 @@ mu = 1.81e-5;
 nBlades1
 nBlades2
 
+if nBlades1 > 45 || nBlades2 > 45
+    break
+end
 
 %NEW Howell
 for i = 1 : length(sigma)
@@ -254,9 +261,7 @@ losses = 0;
 
 %% Profile Losses
 %profileLosses;
-HUB.Re1 = 1e6;
-MID.Re1 = 1e6;
-TIP.Re1 = 1e6;
+
 [HUB.Yprofile1, MID.Yprofile1, TIP.Yprofile1] = profileLosses_rot1('traupel',profile, HUB, MID, TIP);
 [HUB.Yprofile2, MID.Yprofile2, TIP.Yprofile2] = profileLosses_rot2('traupel',profile, HUB, MID, TIP);
 
@@ -282,21 +287,22 @@ delta = 2e-3; % gap between disks
 
 %% Overall Losses Combination (this fromula from Y to Zeta then to deltaEta)
 % Yprofile --> ZetaP --> deltaEta_profile
-[HUB.deltaEta_profile1] = deltaEta_calc('Y',HUB.Yprofile1,[],HUB.Mw2,P1,HUB.P2,T1,HUB.T2,HUB.Beta1,Pt1,v1);
-[MID.deltaEta_profile1] = deltaEta_calc('Y',MID.Yprofile1,[],MID.Mw2,P1,MID.P2,T1,MID.T2,MID.Beta1,Pt1,v1);
-[TIP.deltaEta_profile1] = deltaEta_calc('Y',TIP.Yprofile1,[],TIP.Mw2,P1,TIP.P2,T1,TIP.T2,TIP.Beta1,Pt1,v1);
+[HUB.deltaEta_profile1] = deltaEta_calc('Y',HUB.Yprofile1,[],HUB.Mw2,P1,HUB.P2,T1,HUB.Beta1,Pt1,v1);
+[MID.deltaEta_profile1] = deltaEta_calc('Y',MID.Yprofile1,[],MID.Mw2,P1,MID.P2,T1,MID.Beta1,Pt1,v1);
+[TIP.deltaEta_profile1] = deltaEta_calc('Y',TIP.Yprofile1,[],TIP.Mw2,P1,TIP.P2,T1,TIP.Beta1,Pt1,v1);
 
-[HUB.deltaEta_profile2] = deltaEta_calc('Y',HUB.Yprofile2,[],HUB.Mw4,HUB.P2,HUB.P4,HUB.T2,HUB.T4,HUB.Beta2,HUB.Pt2,HUB.v2);
-[MID.deltaEta_profile2] = deltaEta_calc('Y',MID.Yprofile2,[],MID.Mw4,MID.P2,MID.P4,MID.T2,MID.T4,MID.Beta2,MID.Pt2,MID.v2);
-[TIP.deltaEta_profile2] = deltaEta_calc('Y',TIP.Yprofile2,[],TIP.Mw4,TIP.P2,TIP.P4,TIP.T2,TIP.T4,TIP.Beta2,TIP.Pt2,TIP.v2);
+[HUB.deltaEta_profile2] = deltaEta_calc('Y',HUB.Yprofile2,[],HUB.Mw4,HUB.P2,HUB.P4,HUB.T2,HUB.Beta2,HUB.Pt2,HUB.v2);
+[MID.deltaEta_profile2] = deltaEta_calc('Y',MID.Yprofile2,[],MID.Mw4,MID.P2,MID.P4,MID.T2,MID.Beta2,MID.Pt2,MID.v2);
+[TIP.deltaEta_profile2] = deltaEta_calc('Y',TIP.Yprofile2,[],TIP.Mw4,TIP.P2,TIP.P4,TIP.T2,TIP.Beta2,TIP.Pt2,TIP.v2);
 
 % zetaEW --> deltaEta_endwall
-[deltaEta_endwall1] = deltaEta_calc('Z',[],zetaEW1,HUB.M2,P1,HUB.P2,T1,HUB.T2,HUB.Beta1,Pt1,HUB.v1);
-[deltaEta_endwall2] = deltaEta_calc('Z',[],zetaEW2,HUB.M4,HUB.P2,HUB.P4,HUB.T2,HUB.T4,HUB.Beta2,HUB.Pt2,HUB.v2);
+[deltaEta_endwall1] = deltaEta_calc('Z',[],zetaEW1,HUB.M2,P1,HUB.P2,T1,HUB.Beta1,Pt1,HUB.v1);
+[deltaEta_endwall2] = deltaEta_calc('Z',[],zetaEW2,HUB.M4,HUB.P2,HUB.P4,HUB.T2,HUB.Beta2,HUB.Pt2,HUB.v2);
+
+[deltaEta_diskFriction] = deltaEta_calc('Z',[],zetaD,[],P1,[],T1,BetaTot,Pt1,v1);
 
 eta1 = 1-((HUB.deltaEta_profile1 + MID.deltaEta_profile1 + TIP.deltaEta_profile1)/3 + deltaEta_endwall1 + deltaEta_leakage1);
 eta2 = 1-((HUB.deltaEta_profile2 + MID.deltaEta_profile2 + TIP.deltaEta_profile2)/3 + deltaEta_endwall2 + deltaEta_leakage2);
-
 
 
 %% Total-to-Total Efficiency
@@ -304,7 +310,7 @@ deltaHtis = Cp * T1 * (BetaTot^GAMMA - 1) + (MID.v4^2 - MID.v1^2)/2;
 etaTT = deltaHtis/leulTot;
 
 %% Check on efficiency
-etaTOT= (( (MID.Beta1*MID.Beta2)^(GAMMA) - 1)*T1*eta1*eta2 ) / (   T1*eta2*(MID.Beta1^GAMMA-1) +  MID.T2*eta1*(MID.Beta2^GAMMA-1)   );
+etaTOT= (( (MID.Beta1*MID.Beta2)^(GAMMA) - 1)*T1*eta1*eta2 ) / (   T1*eta2*(MID.Beta1^GAMMA-1) +  MID.T2*eta1*(MID.Beta2^GAMMA-1)   ) - deltaEta_diskFriction;
 err_efficiency = abs(etaTT - etaTOT)/etaTT;
 
 
@@ -314,15 +320,16 @@ if eta1 < 0 || eta2 < 0
   break
 end
 
+end
+
+if nBlades1 > 45 || nBlades2 > 45
+    best = 40;
 
 end
 
-
-
-
 if eta1 < 0 || eta2 < 0 || HUB.Beta1 < 1 || MID.Beta1 < 1 || TIP.Beta1 < 1 || HUB.Beta2 < 1 || MID.Beta2 < 1 || TIP.Beta2 < 1
   fprintf('sto uscendo\n')
-  best = 1e3;
+  best = 40;
 
 else
 
