@@ -65,7 +65,7 @@ v2a=v1a; v4a=v1a; alpha=0;
 
 %% Outer Iteration on Efficiency
 i_eta = 0;
-maxiter = 1000;
+maxiter = 100;
 tol = 1e-2;
 err_efficiency = 0;
 
@@ -158,12 +158,12 @@ mu = 1.81e-5;
 nBlades1
 nBlades2
 
-if nBlades1 > 45 || nBlades2 > 45
+if nBlades1 > 45 || nBlades2 > 45 || nBlades1 < 30 || nBlades2 < 30
     break
 end
 
 %NEW Howell
-for i = 1 : length(sigma)
+
 [deltaBetaOpt1(1)] = howellCorrelation(HUB.beta2,5e5,HUB.sigma1);
 [deltaBetaOpt1(2)] = howellCorrelation(MID.beta2,5e5,MID.sigma1);
 [deltaBetaOpt1(3)] = howellCorrelation(TIP.beta2,5e5,TIP.sigma1);
@@ -177,6 +177,7 @@ changeSolidity1(3)=deltaBetaOpt1(3)-TIP.deltaBeta1;
 changeSolidity2(1)=deltaBetaOpt2(1)+HUB.deltaBeta2;
 changeSolidity2(2)=deltaBetaOpt2(2)+MID.deltaBeta2;
 changeSolidity2(3)=deltaBetaOpt2(3)+TIP.deltaBeta2;
+for i = 1 : length(sigma)
 changeSolidity(:,i) = [changeSolidity1'; changeSolidity2'];
 
 end
@@ -212,7 +213,8 @@ while err > tol && i < maxiter || i == 0
 
 %START WITH NACA PROFILES, link between CL and the angle
 % FOR NACA 65
-Cl = @(theta) theta / 25;
+%Cl = @(theta) theta / 25;
+Cl = @(theta) tand(theta/4) / 0.1103;
 
 %theta is the camber angle
 HUB.Cl1 = Cl(HUB.theta1);
@@ -262,8 +264,8 @@ losses = 0;
 %% Profile Losses
 %profileLosses;
 
-[HUB.Yprofile1, MID.Yprofile1, TIP.Yprofile1] = profileLosses_rot1('traupel',profile, HUB, MID, TIP);
-[HUB.Yprofile2, MID.Yprofile2, TIP.Yprofile2] = profileLosses_rot2('traupel',profile, HUB, MID, TIP);
+[HUB.Zprofile1, MID.Zprofile1, TIP.Zprofile1] = profileLosses_rot1('traupel',profile, HUB, MID, TIP);
+[HUB.Zprofile2, MID.Zprofile2, TIP.Zprofile2] = profileLosses_rot2('traupel',profile, HUB, MID, TIP);
 
 %% Tip clearance / Leakage losses
 deltaC = 2e-3; % tip leakage gap
@@ -277,8 +279,8 @@ deltaC = 2e-3; % tip leakage gap
 %% Secondary Losses / Endwall
 t_TE1 = 0.01 * HUB.c1;
 t_TE2 = 0.01 * HUB.c2;
-[zetaEW1] = endwallLosses(HUB.Yprofile1,HUB.P2,HUB.Pt2,HUB.M2,HUB.deltaBeta1,rho1,HUB.rho2,HUB.v1,HUB.v2,HUB.alfa2,t_TE1,b,S);
-[zetaEW2] = endwallLosses(HUB.Yprofile2,HUB.P4,HUB.Pt4,HUB.M4,HUB.deltaBeta2,HUB.rho2,HUB.rho4,HUB.v2,HUB.v4,HUB.alfa4,t_TE2,b,S);
+[zetaEW1] = endwallLosses(HUB.Zprofile1,HUB.P2,HUB.Pt2,HUB.M2,HUB.deltaBeta1,rho1,HUB.rho2,HUB.v1,HUB.v2,HUB.alfa2,t_TE1,b,S);
+[zetaEW2] = endwallLosses(HUB.Zprofile2,HUB.P4,HUB.Pt4,HUB.M4,HUB.deltaBeta2,HUB.rho2,HUB.rho4,HUB.v2,HUB.v4,HUB.alfa4,t_TE2,b,S);
 
 %% Disk Friction
 delta = 2e-3; % gap between disks
@@ -287,13 +289,13 @@ delta = 2e-3; % gap between disks
 
 %% Overall Losses Combination (this fromula from Y to Zeta then to deltaEta)
 % Yprofile --> ZetaP --> deltaEta_profile
-[HUB.deltaEta_profile1] = deltaEta_calc('Y',HUB.Yprofile1,[],HUB.Mw2,P1,HUB.P2,T1,HUB.Beta1,Pt1,v1);
-[MID.deltaEta_profile1] = deltaEta_calc('Y',MID.Yprofile1,[],MID.Mw2,P1,MID.P2,T1,MID.Beta1,Pt1,v1);
-[TIP.deltaEta_profile1] = deltaEta_calc('Y',TIP.Yprofile1,[],TIP.Mw2,P1,TIP.P2,T1,TIP.Beta1,Pt1,v1);
+[HUB.deltaEta_profile1] = deltaEta_calc('Z',[],HUB.Zprofile1,HUB.Mw2,P1,HUB.P2,T1,HUB.Beta1,Pt1,v1);
+[MID.deltaEta_profile1] = deltaEta_calc('Z',[],MID.Zprofile1,MID.Mw2,P1,MID.P2,T1,MID.Beta1,Pt1,v1);
+[TIP.deltaEta_profile1] = deltaEta_calc('Z',[],TIP.Zprofile1,TIP.Mw2,P1,TIP.P2,T1,TIP.Beta1,Pt1,v1);
 
-[HUB.deltaEta_profile2] = deltaEta_calc('Y',HUB.Yprofile2,[],HUB.Mw4,HUB.P2,HUB.P4,HUB.T2,HUB.Beta2,HUB.Pt2,HUB.v2);
-[MID.deltaEta_profile2] = deltaEta_calc('Y',MID.Yprofile2,[],MID.Mw4,MID.P2,MID.P4,MID.T2,MID.Beta2,MID.Pt2,MID.v2);
-[TIP.deltaEta_profile2] = deltaEta_calc('Y',TIP.Yprofile2,[],TIP.Mw4,TIP.P2,TIP.P4,TIP.T2,TIP.Beta2,TIP.Pt2,TIP.v2);
+[HUB.deltaEta_profile2] = deltaEta_calc('Z',[],HUB.Zprofile2,HUB.Mw4,HUB.P2,HUB.P4,HUB.T2,HUB.Beta2,HUB.Pt2,HUB.v2);
+[MID.deltaEta_profile2] = deltaEta_calc('Z',[],MID.Zprofile2,MID.Mw4,MID.P2,MID.P4,MID.T2,MID.Beta2,MID.Pt2,MID.v2);
+[TIP.deltaEta_profile2] = deltaEta_calc('Z',[],TIP.Zprofile2,TIP.Mw4,TIP.P2,TIP.P4,TIP.T2,TIP.Beta2,TIP.Pt2,TIP.v2);
 
 % zetaEW --> deltaEta_endwall
 [deltaEta_endwall1] = deltaEta_calc('Z',[],zetaEW1,HUB.M2,P1,HUB.P2,T1,HUB.Beta1,Pt1,HUB.v1);
@@ -313,7 +315,6 @@ etaTT = deltaHtis/leulTot;
 etaTOT= (( (MID.Beta1*MID.Beta2)^(GAMMA) - 1)*T1*eta1*eta2 ) / (   T1*eta2*(MID.Beta1^GAMMA-1) +  MID.T2*eta1*(MID.Beta2^GAMMA-1)   ) - deltaEta_diskFriction;
 err_efficiency = abs(etaTT - etaTOT)/etaTT;
 
-
 i_eta = i_eta + 1;
 
 if eta1 < 0 || eta2 < 0
@@ -322,19 +323,21 @@ end
 
 end
 
-if nBlades1 > 45 || nBlades2 > 45
+if nBlades1 > 45 || nBlades2 > 45 || nBlades1 < 30 || nBlades2 < 30
     best = 40;
+    return
 
 end
 
 if eta1 < 0 || eta2 < 0 || HUB.Beta1 < 1 || MID.Beta1 < 1 || TIP.Beta1 < 1 || HUB.Beta2 < 1 || MID.Beta2 < 1 || TIP.Beta2 < 1
   fprintf('sto uscendo\n')
   best = 40;
+  return
 
 else
 
 changeBest = max(changeBest);
-best = 10 * Mrel_tip2 + changeBest;
+best = 10 * Mrel_tip2 + changeBest + 15 * etaTOT;
 fprintf('eta1 = %f',eta1)
 fprintf('\neta2 = %f',eta2)
 end

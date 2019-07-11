@@ -1,4 +1,4 @@
-function [zetaEW] = endwallLosses(YP,p2,pt2,M2,deltaBeta,rho1,rho2,V1,V2,alpha2,t_TE,b,S)
+function [zetaEW] = endwallLosses(zetaP,p2,pt2,M2,deltaBeta,rho1,rho2,V1,V2,alpha2,t_TE,b,S)
 
 % ENDWALLLOSSES Estimate Endwall Losses by means of Lakshiminarayana Correlation
 %
@@ -15,7 +15,7 @@ function [zetaEW] = endwallLosses(YP,p2,pt2,M2,deltaBeta,rho1,rho2,V1,V2,alpha2,
 
 gamma = 1.4;
 
-zetaP = (1 - (1 + YP * (1 - p2/pt2))^((1 - gamma)/gamma)) / ((gamma - 1) / 2 * M2 ^ 2);
+%zetaP = (1 - (1 + YP * (1 - p2/pt2))^((1 - gamma)/gamma)) / ((gamma - 1) / 2 * M2 ^ 2);
 
 zetaEW = abs(zetaP * (1 + (4 * deltaBeta)/sqrt(rho2 * V2 / (rho1 * V1))) * (S * cosd(alpha2) - t_TE) / b);
 

@@ -14,7 +14,7 @@ leulTot=Dhis/eta1;
 
 iterWork=0;     iterVelocity=[];     errorLeul=1000;
 
-while errorLeul>1e-4
+while errorLeul>1e-4 && iterWork < maxiter
 
   iterWork=iterWork+1;
   leulTotOld=leulTot;

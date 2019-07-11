@@ -27,12 +27,12 @@ Dtip=1;
 eta1=0.80;
 eta2=0.85;
 
-Re1 = 6e5;
-Re2 = 1.5e6;
-Mw1_tip=0.8;%0.773;%0.7823;
-work1=0.4111;%0.4766;%0.5;%0.3;%0.3330;%0.3317;%0.3387;%0.339;%0.3177;%0.3; %lavoro percentuale sul primo rotore
-rotRatio=0.8845;%0.78;%1.2455;%1.2574;%1.5;%1.3;   %se rotRatio cresce leul2 cresce ma M2rel cresce
-n=3262;%3000;%2870;%2800;%2848;%3000; %se n cresce leul1 cresce, Beta1 deve essere aumentato per non essere nullo all'hub
+Re1 = 0.615e6;%1.128e6;
+Re2 = 0.9233e6;%1.3519e6;
+Mw1_tip=0.7998;%0.7917; %0.7758;% 
+work1=0.4254;%0.4695;%0.4111;%0.4433; %0.4613; %lavoro percentuale sul primo rotore
+rotRatio=0.9127;%0.9518;%0.8845;%1.0368; %0.8;   %se rotRatio cresce leul2 cresce ma M2rel cresce
+n=3196;%3550;%3262;%3140;%2956; %se n cresce leul1 cresce, Beta1 deve essere aumentato per non essere nullo all'hub
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -153,7 +153,7 @@ nBlades2
 
 
 %NEW Howell
-for i = 1 : length(sigma)
+
 [deltaBetaOpt1(1)] = howellCorrelation(HUB.beta2,5e5,HUB.sigma1);
 [deltaBetaOpt1(2)] = howellCorrelation(MID.beta2,5e5,MID.sigma1);
 [deltaBetaOpt1(3)] = howellCorrelation(TIP.beta2,5e5,TIP.sigma1);
@@ -167,8 +167,9 @@ changeSolidity1(3)=deltaBetaOpt1(3)-TIP.deltaBeta1;
 changeSolidity2(1)=deltaBetaOpt2(1)+HUB.deltaBeta2;
 changeSolidity2(2)=deltaBetaOpt2(2)+MID.deltaBeta2;
 changeSolidity2(3)=deltaBetaOpt2(3)+TIP.deltaBeta2;
-changeSolidity(:,i) = [changeSolidity1'; changeSolidity2'];
 
+for i = 1 : length(sigma)
+changeSolidity(:,i) = [changeSolidity1'; changeSolidity2'];
 end
 
 [changeBest,~] = min(abs(changeSolidity)')
@@ -200,7 +201,9 @@ while err > tol && i < maxiter || i == 0
 
 %START WITH NACA PROFILES, link between CL and the angle
 % FOR NACA 65
-Cl = @(theta) theta / 25;
+%Cl = @(theta) theta / 25;
+% FOR DCA
+Cl = @(theta) tand(theta/4) / 0.1103;
 
 %theta is the camber angle
 HUB.Cl1 = Cl(HUB.theta1);
@@ -250,8 +253,8 @@ losses = 0;
 %% Profile Losses
 %profileLosses;
 
-[HUB.Yprofile1, MID.Yprofile1, TIP.Yprofile1] = profileLosses_rot1('traupel',profile, HUB, MID, TIP);
-[HUB.Yprofile2, MID.Yprofile2, TIP.Yprofile2] = profileLosses_rot2('traupel',profile, HUB, MID, TIP);
+[HUB.Zprofile1, MID.Zprofile1, TIP.Zprofile1] = profileLosses_rot1('traupel',profile, HUB, MID, TIP);
+[HUB.Zprofile2, MID.Zprofile2, TIP.Zprofile2] = profileLosses_rot2('traupel',profile, HUB, MID, TIP);
 
 %% Tip clearance / Leakage losses
 deltaC = 2e-3; % tip leakage gap
@@ -265,8 +268,8 @@ deltaC = 2e-3; % tip leakage gap
 %% Secondary Losses / Endwall
 t_TE1 = 0.01 * HUB.c1;
 t_TE2 = 0.01 * HUB.c2;
-[zetaEW1] = endwallLosses(HUB.Yprofile1,HUB.P2,HUB.Pt2,HUB.M2,HUB.deltaBeta1,rho1,HUB.rho2,HUB.v1,HUB.v2,HUB.alfa2,t_TE1,b,S);
-[zetaEW2] = endwallLosses(HUB.Yprofile2,HUB.P4,HUB.Pt4,HUB.M4,HUB.deltaBeta2,HUB.rho2,HUB.rho4,HUB.v2,HUB.v4,HUB.alfa4,t_TE2,b,S);
+[zetaEW1] = endwallLosses(HUB.Zprofile1,HUB.P2,HUB.Pt2,HUB.M2,HUB.deltaBeta1,rho1,HUB.rho2,HUB.v1,HUB.v2,HUB.alfa2,t_TE1,b,S);
+[zetaEW2] = endwallLosses(HUB.Zprofile2,HUB.P4,HUB.Pt4,HUB.M4,HUB.deltaBeta2,HUB.rho2,HUB.rho4,HUB.v2,HUB.v4,HUB.alfa4,t_TE2,b,S);
 
 %% Disk Friction
 delta = 2e-3; % gap between disks
@@ -275,13 +278,13 @@ delta = 2e-3; % gap between disks
 
 %% Overall Losses Combination (this fromula from Y to Zeta then to deltaEta)
 % Yprofile --> ZetaP --> deltaEta_profile
-[HUB.deltaEta_profile1] = deltaEta_calc('Y',HUB.Yprofile1,[],HUB.Mw2,P1,HUB.P2,T1,HUB.Beta1,Pt1,v1);
-[MID.deltaEta_profile1] = deltaEta_calc('Y',MID.Yprofile1,[],MID.Mw2,P1,MID.P2,T1,MID.Beta1,Pt1,v1);
-[TIP.deltaEta_profile1] = deltaEta_calc('Y',TIP.Yprofile1,[],TIP.Mw2,P1,TIP.P2,T1,TIP.Beta1,Pt1,v1);
+[HUB.deltaEta_profile1] = deltaEta_calc('Z',[],HUB.Zprofile1,HUB.Mw2,P1,HUB.P2,T1,HUB.Beta1,Pt1,v1);
+[MID.deltaEta_profile1] = deltaEta_calc('Z',[],MID.Zprofile1,MID.Mw2,P1,MID.P2,T1,MID.Beta1,Pt1,v1);
+[TIP.deltaEta_profile1] = deltaEta_calc('Z',[],TIP.Zprofile1,TIP.Mw2,P1,TIP.P2,T1,TIP.Beta1,Pt1,v1);
 
-[HUB.deltaEta_profile2] = deltaEta_calc('Y',HUB.Yprofile2,[],HUB.Mw4,HUB.P2,HUB.P4,HUB.T2,HUB.Beta2,HUB.Pt2,HUB.v2);
-[MID.deltaEta_profile2] = deltaEta_calc('Y',MID.Yprofile2,[],MID.Mw4,MID.P2,MID.P4,MID.T2,MID.Beta2,MID.Pt2,MID.v2);
-[TIP.deltaEta_profile2] = deltaEta_calc('Y',TIP.Yprofile2,[],TIP.Mw4,TIP.P2,TIP.P4,TIP.T2,TIP.Beta2,TIP.Pt2,TIP.v2);
+[HUB.deltaEta_profile2] = deltaEta_calc('Z',[],HUB.Zprofile2,HUB.Mw4,HUB.P2,HUB.P4,HUB.T2,HUB.Beta2,HUB.Pt2,HUB.v2);
+[MID.deltaEta_profile2] = deltaEta_calc('Z',[],MID.Zprofile2,MID.Mw4,MID.P2,MID.P4,MID.T2,MID.Beta2,MID.Pt2,MID.v2);
+[TIP.deltaEta_profile2] = deltaEta_calc('Z',[],TIP.Zprofile2,TIP.Mw4,TIP.P2,TIP.P4,TIP.T2,TIP.Beta2,TIP.Pt2,TIP.v2);
 
 % zetaEW --> deltaEta_endwall
 [deltaEta_endwall1] = deltaEta_calc('Z',[],zetaEW1,HUB.M2,P1,HUB.P2,T1,HUB.Beta1,Pt1,HUB.v1);
