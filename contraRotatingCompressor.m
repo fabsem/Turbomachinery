@@ -187,8 +187,6 @@ end
 % CHOICE!!!!!!!!!!!!!!!!
 thick1 = 0.1;      %thickness 10% of the chord
 thick2 = 0.1;
-%chord1 = 0.13;       %chord [m] constant over the span
-%chord2 = 0.13;
 
 %Iteration on CAMBER ANGLE
 i = 0;
@@ -219,7 +217,7 @@ TIP.Cl2 = Cl(TIP.theta2);
 %Re_hub = Re((rho1+rho2_hub)/2,(w1_hub + w2_hub)/2,HUB.c1);
 %Re_mid = Re((rho1+rho2_mid)/2,(w1_mid + w2_mid)/2,c);
 %Re_tip = Re((rho1+rho2_tip)/2,(w1_tip + w2_tip)/2,c);
-%keyboard
+
 lieblein_rot1;
 lieblein_rot2;
 
@@ -307,29 +305,25 @@ err_efficiency = abs(etaTT - etaTOT)/etaTT;
 
 
 i_eta = i_eta + 1;
-%keyboard
+
 end
 
 
-%plotVelocities(HUB.v1a,HUB.v2a,HUB.v4a,HUB.v1,HUB.v2,HUB.v4,HUB.w1,HUB.w2,HUB.w3,HUB.w4,HUB.v1t,HUB.v2t,HUB.v4t,HUB.w1t,HUB.w2t,HUB.w3t,HUB.w4t,U1(1),U2(1),[1 0 0])
-printBlades('DCA',HUB.gamma1,MID.gamma1,TIP.gamma1,HUB.c1,MID.c1,TIP.c1,b,HUB.theta1,MID.theta1,TIP.theta1)
-%printBlades('DCA',HUB.gamma2,MID.gamma2,TIP.gamma2,HUB.c2,MID.c2,TIP.c2,b,HUB.theta2,MID.theta2,TIP.theta2)
 
 %% Draw the blade
+plotVelocities(HUB.v1a,HUB.v2a,HUB.v4a,HUB.v1,HUB.v2,HUB.v4,HUB.w1,HUB.w2,HUB.w3,HUB.w4,HUB.v1t,HUB.v2t,HUB.v4t,HUB.w1t,HUB.w2t,HUB.w3t,HUB.w4t,U1(1),U2(1),[1 0 0])
+plotVelocities(MID.v1a,MID.v2a,MID.v4a,MID.v1,MID.v2,MID.v4,MID.w1,MID.w2,MID.w3,MID.w4,MID.v1t,MID.v2t,MID.v4t,MID.w1t,MID.w2t,MID.w3t,MID.w4t,U1(2),U2(2),[0 1 0])
+plotVelocities(TIP.v1a,TIP.v2a,TIP.v4a,TIP.v1,TIP.v2,TIP.v4,TIP.w1,TIP.w2,TIP.w3,TIP.w4,TIP.v1t,TIP.v2t,TIP.v4t,TIP.w1t,TIP.w2t,TIP.w3t,TIP.w4t,U1(3),U2(3),[0 0 1])
+
+printBlades('DCA',HUB.gamma1,MID.gamma1,TIP.gamma1,HUB.c1,MID.c1,TIP.c1,b,HUB.theta1,MID.theta1,TIP.theta1)
+printBlades('DCA',HUB.gamma2,MID.gamma2,TIP.gamma2,HUB.c2,MID.c2,TIP.c2,b,HUB.theta2,MID.theta2,TIP.theta2)
 
 %Naca65 Profile
-
-
-
-
 %run stampapalette.m
 
-
-
-%keyboard
 %% Losses
 %losses;
 
 
 %% IGV
-%IGV;
+IGV;
