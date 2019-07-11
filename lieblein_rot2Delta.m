@@ -3,9 +3,9 @@
 % delta0 = delta010 * Kdelta_thick * Kdelta_shape
 
 %for NACA 65
-Kdelta_shape_tip = lieblein_deltacorrectionShape('DCA');%1;
-Kdelta_shape_mid = lieblein_deltacorrectionShape('DCA');%1;
-Kdelta_shape_hub = lieblein_deltacorrectionShape('DCA');%1;
+Kdelta_shape_tip = lieblein_deltacorrectionShape(profile{6});%1;
+Kdelta_shape_mid = lieblein_deltacorrectionShape(profile{5});%1;
+Kdelta_shape_hub = lieblein_deltacorrectionShape(profile{4});%1;
 
 %correction for the thickness
 % do graph --> [Kdelta_thick] = liblein_deltathick(t,c)
@@ -21,9 +21,9 @@ delta010_hub = lieblein_delta010(HUBfp.beta3,HUB.sigma2); %1.3;
 
 %coefficient m
 % do graph --> [m] = lieblein_mcoeff(beta1,'profile')
-m_lieblein_tip = lieblein_mcoeff(TIPfp.beta3,'DCA');%0.26;
-m_lieblein_mid = lieblein_mcoeff(MIDfp.beta3,'DCA');%0.25;
-m_lieblein_hub = lieblein_mcoeff(HUBfp.beta3,'DCA');%0.23;
+m_lieblein_tip = lieblein_mcoeff(TIPfp.beta3,profile{6});%0.26;
+m_lieblein_mid = lieblein_mcoeff(MIDfp.beta3,profile{5});%0.25;
+m_lieblein_hub = lieblein_mcoeff(HUBfp.beta3,profile{4});%0.23;
 
 %exponent b
 % do graph --> [b] = lieblein_bcoeff(beta1)
