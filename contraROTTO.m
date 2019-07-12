@@ -97,7 +97,7 @@ end
 Mrel_tip1=TIP.w1/sqrt(gamma*R*T1);
 Mrel_tip2=TIP.w3/sqrt(gamma*R*TIP.T2);
 
-close all
+
 %Howell correlation per calcolare il
 iterHowell = 0;
 maxiter = 100;
@@ -138,10 +138,10 @@ if changeBest(1) > maxDeflAllowed || ...
     disp('intervieni, howell non è ok')
 
     Mrel_tip2
-    solidityBest = sigma(index)
+    solidityBest = sigma(index);
     %return
 else
-solidityBest = sigma(index)
+solidityBest = sigma(index);
 Mrel_tip2
 end
 
@@ -158,7 +158,7 @@ mu = 1.81e-5;
 nBlades1
 nBlades2
 
-if nBlades1 > 45 || nBlades2 > 45 || nBlades1 < 30 || nBlades2 < 30
+if nBlades1 > 50 || nBlades2 > 50 || nBlades1 < 25 || nBlades2 < 25
     break
 end
 
@@ -182,7 +182,7 @@ changeSolidity(:,i) = [changeSolidity1'; changeSolidity2'];
 
 end
 
-[changeBest,~] = min(abs(changeSolidity)')
+[changeBest,~] = min(abs(changeSolidity)');
 maxDeflAllowed = 3;
 if changeBest(1) > maxDeflAllowed || ...
         changeBest(2) > maxDeflAllowed || ...
@@ -323,23 +323,25 @@ end
 
 end
 
-if nBlades1 > 45 || nBlades2 > 45 || nBlades1 < 30 || nBlades2 < 30
-    best = 40;
+%changeBest = max(changeBest);
+
+if nBlades1 > 50 || nBlades2 > 50 || nBlades1 < 25 || nBlades2 < 25
+    best = 2;
     return
 
-end
+elseif TIP.Mw3 > 0.8 || max(changeBest) > 3.5 
+    best = 2;
+    return
 
-if eta1 < 0 || eta2 < 0 || HUB.Beta1 < 1 || MID.Beta1 < 1 || TIP.Beta1 < 1 || HUB.Beta2 < 1 || MID.Beta2 < 1 || TIP.Beta2 < 1
-  fprintf('sto uscendo\n')
-  best = 40;
+elseif eta1 < 0 || eta2 < 0 || HUB.Beta1 < 1 || MID.Beta1 < 1 || TIP.Beta1 < 1 || HUB.Beta2 < 1 || MID.Beta2 < 1 || TIP.Beta2 < 1
+  best = 2;
   return
 
-else
-
-changeBest = max(changeBest);
-best = 10 * Mrel_tip2 + changeBest + 15 * etaTOT;
-fprintf('eta1 = %f',eta1)
-fprintf('\neta2 = %f',eta2)
+else    
+    best = 1/etaTOT;
+    fprintf('eta1 = %f',eta1)
+    fprintf('\neta2 = %f',eta2)
+    fprintf('\neta2 = %f',etaTOT)
 end
 
 end

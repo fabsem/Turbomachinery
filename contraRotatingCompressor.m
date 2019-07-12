@@ -27,12 +27,12 @@ Dtip=1;
 eta1=0.80;
 eta2=0.85;
 
-Re1 = 0.615e6;%1.128e6;
-Re2 = 0.9233e6;%1.3519e6;
-Mw1_tip=0.7998;%0.7917; %0.7758;% 
-work1=0.4254;%0.4695;%0.4111;%0.4433; %0.4613; %lavoro percentuale sul primo rotore
-rotRatio=0.9127;%0.9518;%0.8845;%1.0368; %0.8;   %se rotRatio cresce leul2 cresce ma M2rel cresce
-n=3196;%3550;%3262;%3140;%2956; %se n cresce leul1 cresce, Beta1 deve essere aumentato per non essere nullo all'hub
+Re1 = 7.5765e5;%0.615e6;%1.128e6;
+Re2 = 1.0552e6;%0.9233e6;%1.3519e6;
+Mw1_tip=0.8;%0.7998;%0.7917; %0.7758;% 
+work1=0.4276;%0.4254;%0.4695;%0.4111;%0.4433; %0.4613; %lavoro percentuale sul primo rotore
+rotRatio=1.0164;%0.9127;%0.9518;%0.8845;%1.0368; %0.8;   %se rotRatio cresce leul2 cresce ma M2rel cresce
+n=3800;%3196;%3550;%3262;%3140;%2956; %se n cresce leul1 cresce, Beta1 deve essere aumentato per non essere nullo all'hub
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
