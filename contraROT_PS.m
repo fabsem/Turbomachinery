@@ -12,12 +12,12 @@ addpath('traupel/')
 addpath('blades/')
 
 %% Optimization
-%work rotRatio n Mw1_tip Re1 Re2
-lb = [0.3 0.8 2600 0.7 6e5 6e5];
-ub = [0.7 1.5 3800 0.8 1.5e6 1.5e6];
+%work rotRatio n Mw1_tip Re1 Re2 alfa1
+lb = [0.3 0.7 2600 0.7 6e5 6e5 -5  -5  -5];
+ub = [0.7 1.5 3800 0.88 2e6 2e6  7  7  7];
 
 fun = @contraROTTO;
-nvars = 6;
+nvars = 9;
 
 %Starts ParallelPool for Parallel Computation
 %parpool;
@@ -26,7 +26,7 @@ nvars = 6;
 days = 7;
 MaxTime = 60 * 60 * 24 * days;
 
-options = optimoptions('particleswarm','SwarmSize',500,'Display','Iter',...
+options = optimoptions('particleswarm','SwarmSize',1000,'Display','Iter',...
                        'FunctionTolerance',1e-3,'MaxIterations',200*nvars,...
                        'MaxTime',MaxTime,'PlotFcn','pswplotbestf',...
                        'UseParallel',true,'UseVectorized',false);

@@ -330,22 +330,22 @@ end
 
 
 if nBlades1 > 70 || nBlades2 > 70 || nBlades1 < 25 || nBlades2 < 25
-    best = 10;
+    best = 7;
     return
     
 elseif i_eta==maxiter_eta
-    best = 9;
+    best = 7;
     return
 
 elseif TIP.Mw3 > 0.88 || TIP.Mw1 > 0.88 || max(changeBest) > 5 ...
        || HUB.Mw3 > 0.88 || MID.Mw3 > 0.88
-    best = 8;
+    best = 6;
     return
 
 elseif eta1 < 0 || eta2 < 0 || eta1 > 1 || eta2 > 1 ...
         || HUB.Beta1 < 1 || MID.Beta1 < 1 || TIP.Beta1 < 1 ...
         || HUB.Beta2 < 1 || MID.Beta2 < 1 || TIP.Beta2 < 1
-  best = 7;
+  best = 6;
   return
 
 else    
