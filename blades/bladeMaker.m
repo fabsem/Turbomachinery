@@ -79,23 +79,23 @@ elseif strcmp(name,'DCA')
   x_edge_sx = r0 * cosd(theta_r0) + x_edge0_sx;
   y_edge_sx = r0 * sind(theta_r0) + y_edge0_sx;
 
-  
+
   %% Output vector
   x_profile = [flip(xu), xl]';
   y_profile = [flip(yu), yl]';
-  
+
   % Flip if theta > 0
   if theta > 0
-    
+
     y_profile = y_profile - 2 * y_profile;
     yl = yl - 2 * yl;
     yu = yu - 2 * yu;
     y = y - 2 * y;
-    
-    
-    
+
+
+
   end
-  
+
   % Print Blades
   figure
   plot(x,y,'k--')
@@ -112,9 +112,9 @@ elseif strcmp(name,'DCA')
 else
   return
 
-  
-end  
- 
+
+end
+
 
 
 end
