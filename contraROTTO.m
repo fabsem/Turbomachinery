@@ -349,7 +349,7 @@ elseif eta1 < 0 || eta2 < 0 || eta1 > 1 || eta2 > 1 ...
   return
 
 else    
-    best = 1-etaTOT + 0.5*max(changeBest)+0.9*(HUB.Mw1+MID.Mw1+TIP.Mw1);
+    best = 1-etaTOT + 0.5*max(changeBest)+0.9*(HUB.Mw1+MID.Mw1+TIP.Mw1)+0.5*(HUB.Mw2+MID.Mw2);
     fprintf('eta1 = %f',eta1)
     fprintf('\neta2 = %f',eta2)
     fprintf('\netaTOT = %f',etaTOT)

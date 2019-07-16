@@ -84,8 +84,8 @@ elseif strcmp(name,'DCA')
   x_profile = [flip(xu), xl]';
   y_profile = [flip(yu), yl]';
   
-  % Flip if theta < 0
-  if theta < 0
+  % Flip if theta > 0
+  if theta > 0
     
     y_profile = y_profile - 2 * y_profile;
     yl = yl - 2 * yl;

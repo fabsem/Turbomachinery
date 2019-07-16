@@ -24,18 +24,20 @@ BetaTot=1.45; %compression ratio
 
 % PARAMETRI
 Dtip=1;
-eta1=0.80;
-eta2=0.85;
+eta1=0.76;
+eta2=0.87;
+load OPT5
+opt=optimalSolution;
 
-Re1 =7.3067e5; %8.0377e5;%0.615e6;%1.128e6;
-Re2 =1.13539e6; %1.2462e6;%0.9233e6;%1.3519e6;
-Mw1_tip=0.8243;%0.8369;%0.7998;%0.7917; %0.7758;% 
-work1=0.4227;%0.4564;%0.4254;%0.4695;%0.4111;%0.4433; %0.4613; %lavoro percentuale sul primo rotore
-rotRatio=0.8889;%0.8361;%0.9127;%0.9518;%0.8845e;%1.0368; %0.8;   %se rotRatio cresce leul2 cresce ma M2rel cresce
-n=3306;%3196;%3550;%3262;%3140;%2956; %se n cresce leul1 cresce, Beta1 deve essere aumentato per non essere nullo all'hub
-alfa_mid=0.9399;
-alfa_hub=-1.0745;
-alfa_tip=-0.4110;
+work1=opt(1);
+rotRatio=opt(2);
+n=opt(3);
+Mw1_tip= opt(4);
+Re1 = opt(5);
+Re2 = opt(6);
+alfa_mid=opt(7);
+alfa_hub=opt(8);
+alfa_tip=opt(9);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -317,10 +319,10 @@ plotVelocities(HUB.v1a,HUB.v2a,HUB.v4a,HUB.v1,HUB.v2,HUB.v4,HUB.w1,HUB.w2,HUB.w3
 plotVelocities(MID.v1a,MID.v2a,MID.v4a,MID.v1,MID.v2,MID.v4,MID.w1,MID.w2,MID.w3,MID.w4,MID.v1t,MID.v2t,MID.v4t,MID.w1t,MID.w2t,MID.w3t,MID.w4t,U1(2),U2(2),[0 1 0])
 plotVelocities(TIP.v1a,TIP.v2a,TIP.v4a,TIP.v1,TIP.v2,TIP.v4,TIP.w1,TIP.w2,TIP.w3,TIP.w4,TIP.v1t,TIP.v2t,TIP.v4t,TIP.w1t,TIP.w2t,TIP.w3t,TIP.w4t,U1(3),U2(3),[0 0 1])
 
-%printBlades('DCA',HUB.gamma1,MID.gamma1,TIP.gamma1,HUB.c1,MID.c1,TIP.c1,b,HUB.theta1,MID.theta1,TIP.theta1)
-%printBlades('DCA',HUB.gamma2,MID.gamma2,TIP.gamma2,HUB.c2,MID.c2,TIP.c2,b,HUB.theta2,MID.theta2,TIP.theta2)
+printBlades('DCA',HUB.gamma1,MID.gamma1,TIP.gamma1,HUB.c1,MID.c1,TIP.c1,b,HUB.theta1,MID.theta1,TIP.theta1)
+printBlades('DCA',HUB.gamma2,MID.gamma2,TIP.gamma2,HUB.c2,MID.c2,TIP.c2,b,HUB.theta2,MID.theta2,TIP.theta2)
 
-bladePOINTS;
+%bladePOINTS;
 
 nBlades1
 nBlades2
@@ -337,4 +339,4 @@ etaTOT
 
 
 %% IGV
-%IGV;
+IGV;
