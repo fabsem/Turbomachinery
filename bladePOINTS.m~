@@ -1,0 +1,26 @@
+% Run inside main script
+
+%print with stagger
+stagger = 1;
+
+%Rotor1
+[x1,y1] = bladeMaker('DCA',HUB.theta1,HUB.c1,stagger,HUB.gamma1,'Hub - Rotor 1');
+[x2,y2] = bladeMaker('DCA',MID.theta1,MID.c1,stagger,MID.gamma1,'Mid - Rotor 1');
+[x3,y3] = bladeMaker('DCA',TIP.theta1,TIP.c1,stagger,TIP.gamma1,'Tip - Rotor 1');
+
+
+writeGeomFile(y1,[],x1,'hub_R1')
+writeGeomFile(y2,[],x2,'mid_R1')
+writeGeomFile(y3,[],x3,'tip_R1')
+
+%Rotor2
+[x4,y4] = bladeMaker('DCA',HUB.theta2,HUB.c2,stagger,HUB.gamma2,'Hub - Rotor 2');
+[x5,y5] = bladeMaker('DCA',MID.theta2,MID.c2,stagger,MID.gamma2,'Mid - Rotor 2');
+[x6,y6] = bladeMaker('DCA',TIP.theta2,TIP.c2,stagger,TIP.gamma2,'Tip - Rotor 2');
+
+writeGeomFile(y4,[],x4,'hub_R2')
+writeGeomFile(y5,[],x5,'mid_R2')
+writeGeomFile(y6,[],x6,'tip_R2')
+
+% IGV
+[x7,y7] = bladeMaker('naca65',HUBfp.theta_IGV,HUBfp.

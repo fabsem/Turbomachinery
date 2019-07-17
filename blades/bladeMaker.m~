@@ -4,8 +4,8 @@ theta_blade = abs(theta);
 
 if strcmp(name,'naca65')
 %constants
-x_c=([0 0.5 0.75 1.25 2.5 5 7.5 10 15 20 25 30 35 40 45 50 ...
-     55 60 65 70 75 80 85 90 95 100] - 50)/100;% chord percenage x/c
+x_c=[0 0.5 0.75 1.25 2.5 5 7.5 10 15 20 25 30 35 40 45 50 ...
+     55 60 65 70 75 80 85 90 95 100]/100;% chord percenage x/c
 t_c=[0 0.722 0.932 1.169 1.574 2.177 2.647 3.040 3.666 4.143 4.503 4.76 4.924 4.996 4.963 4.812 ...
      4.53 4.146 3.682 3.156 2.584 1.987 1.385 0.81 0.306 0]/100;% half thickness t/c
 y_camber=[0 0.25 0.35 0.535 0.93 1.58 2.12 2.585 3.365 3.98 4.475 4.86 5.15 5.355 5.475 5.515 ...
@@ -19,12 +19,10 @@ y=c*y_camber*cl0;
 yu=y+t;
 yl=y-t;
 
-xu = x;
-xl = x;
-
+x = 
 %output vector
-      x_profile = [flip(xu), xl]';
-      y_profile = [flip(yu), yl]';
+x_profile = flip(x)';
+y_profile = [flip(yu(end:2)) yl]';
 
   % Flip if theta > 0
   if theta > 0
@@ -34,8 +32,8 @@ xl = x;
     yu = yu - 2 * yu;
     y = y - 2 * y;
     
-      x_profile = [flip(xu), xl]';
-      y_profile = [flip(yu), yl]';
+      x_profile = flip(x)';
+      y_profile = [flip(yu(end:2)), yl]';
 
  end
   
@@ -64,10 +62,9 @@ axis equal
 %plot(x,yu,'k','linewidth',2)
 %plot(x,yl,'k','linewidth',2)
 plot(x_profile,y_profile,'k','linewidth',2)
-xlabel('x [m]')
-ylabel('y [m]')
+xlabel('x')
+ylabel('y')
 title([plotname,'  - c = ', num2str(round(c,3)),', t = ',num2str(round(max(t)/c,3)),'c'])  
-saveas(gcf,plotname,'png')
 
 elseif strcmp(name,'DCA')
 
@@ -165,11 +162,8 @@ elseif strcmp(name,'DCA')
   plot(x_profile,y_profile,'k','linewidth',2)
   %plot(x_edge_dx,y_edge_dx)
   %plot(x_edge_sx,y_edge_sx)
-  xlabel('x [m]')
-  ylabel('y [m]')
   title([plotname,'  - c = ', num2str(round(c,3)),', t = ',num2str(round(tb,3)),'c'])
   axis equal
-  saveas(gcf,plotname,'png')
 
 
 
