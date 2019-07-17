@@ -425,3 +425,6 @@ end
 end
 
 [best_etaTOT iterBestIGV]= max(etaTOTfp);
+
+
+clearvars HUBfp MIDfp TIPfp

@@ -102,8 +102,8 @@ else
 
 end
 
-deltaBeta_optimal = polyval(p,beta2);
-deltaBeta_optimal = deltaBeta_optimal * (PHI * PSI);
+deltaBeta_optimal_p = polyval(p,beta2);
+deltaBeta_optimal = deltaBeta_optimal_p * (PHI * PSI);
 
 
 if strcmp(varargin,'plot')
@@ -114,14 +114,14 @@ if strcmp(varargin,'plot')
     figure(1)
     plot(x_howell,y_howell,'linewidth',2)
     hold on
-    plot(ones(1,100) * beta2,linspace(0,deltaBeta_optimal),'r','linewidth',2)
+    plot(ones(1,100) * beta2,linspace(0,deltaBeta_optimal_p),'r','linewidth',2)
     plot(beta2,10,'.r','markersize',30)
-    plot(linspace(0,beta2),ones(1,100) * deltaBeta_optimal,'r','linewidth',2)
-    plot(0,deltaBeta_optimal,'.r','markersize',30)
+    plot(linspace(0,beta2),ones(1,100) * deltaBeta_optimal_p,'r','linewidth',2)
+    plot(0,deltaBeta_optimal_p,'.r','markersize',30)
     beta2value = num2str(beta2);
-    beta_optimalValue = num2str(round(deltaBeta_optimal,2));
+    beta_optimalValue = num2str(round(deltaBeta_optimal_p,2));
     text(beta2+2,12,beta2value,'fontsize',18)
-    text(1,deltaBeta_optimal + 2,beta_optimalValue,'fontsize',18)
+    text(1,deltaBeta_optimal_p + 2,beta_optimalValue,'fontsize',18)
     xlabel('$\beta_2 [^\circ]$')
     ylabel('$\Delta \beta^* [^\circ]$')
     xlim([0,50])
