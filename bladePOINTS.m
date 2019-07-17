@@ -4,7 +4,7 @@
 stagger = 1;
 
 %Rotor1
-[x1,y1] = bladeMaker('naca65',HUB.theta1,HUB.c1,stagger,HUB.gamma1,'Hub - Rotor 1');
+[x1,y1] = bladeMaker('DCA',HUB.theta1,HUB.c1,stagger,HUB.gamma1,'Hub - Rotor 1');
 [x2,y2] = bladeMaker('DCA',MID.theta1,MID.c1,stagger,MID.gamma1,'Mid - Rotor 1');
 [x3,y3] = bladeMaker('DCA',TIP.theta1,TIP.c1,stagger,TIP.gamma1,'Tip - Rotor 1');
 

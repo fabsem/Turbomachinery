@@ -41,8 +41,10 @@ TIP.deltaAlfa = TIP.alfa1;
 
 
 HUB.i_IGV = HUB.deltaAlfa - HUBfp.theta_IGV + HUBfp.delta_IGV;
-MID.i_IGV = MID.deltaAlfa - MIDfp.theta_IGV + MIDfp.delta_IGV;
-TIP.i_IGV = TIP.deltaAlfa - TIPfp.theta_IGV + TIPfp.delta_IGV;
+
+HUB.i_IGV = HUB.deltaAlfa - HUBfp.theta_IGV + HUBfp.delta_IGV;
+
+HUB.i_IGV = HUB.deltaAlfa - HUBfp.theta_IGV + TIPfp.delta_IGV;
 
 
 HUB.gamma_IGV = 0 + HUB.i_IGV + HUBfp.theta_IGV / 2;

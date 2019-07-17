@@ -8,7 +8,6 @@ function writeGeomFile(x,y,z,name)
 %
 %   writeGeomFile(x,y,z,naca0012)
 
-
 name = strcat(name,'.txt');
 
 n = length(x);
