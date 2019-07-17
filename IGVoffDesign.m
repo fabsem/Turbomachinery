@@ -393,6 +393,35 @@ deltaC = 2e-3; % tip leakage gap
 eta1fp = 1-((HUBfp.deltaEta_profile1 + MIDfp.deltaEta_profile1 + TIPfp.deltaEta_profile1)/3 + deltaEta_endwall1_fp + deltaEta_leakage1_fp);
 eta2fp = 1-((HUBfp.deltaEta_profile2 + MIDfp.deltaEta_profile2 + TIPfp.deltaEta_profile2)/3 + deltaEta_endwall2_fp + deltaEta_leakage2_fp);
 etaTOTfp(iterIGV) = (( (MIDfp.Beta1*MIDfp.Beta2)^(GAMMA) - 1)*T1*eta1fp*eta2fp ) / (   T1*eta2fp*(MIDfp.Beta1^GAMMA-1) +  MIDfp.T2*eta1fp*(MIDfp.Beta2^GAMMA-1)   ) - deltaEta_diskFriction;
+
+[deltaBetaOpt1(1)] = howellCorrelation(HUBfp.beta2,5e5,HUBfp.sigma1);
+[deltaBetaOpt1(2)] = howellCorrelation(MIDfp.beta2,5e5,MIDfp.sigma1);
+[deltaBetaOpt1(3)] = howellCorrelation(TIPfp.beta2,5e5,TIPfp.sigma1);
+[deltaBetaOpt2(1)] = howellCorrelation(HUBfp.beta4,5e5,HUBfp.sigma2);
+[deltaBetaOpt2(2)] = howellCorrelation(MIDfp.beta4,5e5,MIDfp.sigma2);
+[deltaBetaOpt2(3)] = howellCorrelation(TIPfp.beta4,5e5,TIPfp.sigma2);
+
+changeSolidity1(1)=deltaBetaOpt1(1)-HUB.deltaBeta1;  %se <1 aumentare solidity
+changeSolidity1(2)=deltaBetaOpt1(2)-MID.deltaBeta1;  %se >1 diminuire solidity
+changeSolidity1(3)=deltaBetaOpt1(3)-TIP.deltaBeta1;
+changeSolidity2(1)=deltaBetaOpt2(1)+HUB.deltaBeta2;
+changeSolidity2(2)=deltaBetaOpt2(2)+MID.deltaBeta2;
+changeSolidity2(3)=deltaBetaOpt2(3)+TIP.deltaBeta2;
+
+for i = 1 : length(sigma)
+changeSolidity(:,i) = [changeSolidity1'; changeSolidity2'];
+end
+
+[changeBest,~] = min(abs(changeSolidity)');
+if changeBest(1) > 4 || ...
+        changeBest(2) > maxDeflAllowed || ...
+        changeBest(3) > maxDeflAllowed || ...
+        changeBest(4) > maxDeflAllowed || ...
+        changeBest(5) > maxDeflAllowed || ...
+        changeBest(6) > maxDeflAllowed
+    etaTOTfp(iterIGV)=0.1;
+end
+
 end
 
 [best_etaTOT iterBestIGV]= max(etaTOTfp);

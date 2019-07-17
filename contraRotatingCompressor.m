@@ -319,8 +319,8 @@ end
 %plotVelocities(MID.v1a,MID.v2a,MID.v4a,MID.v1,MID.v2,MID.v4,MID.w1,MID.w2,MID.w3,MID.w4,MID.v1t,MID.v2t,MID.v4t,MID.w1t,MID.w2t,MID.w3t,MID.w4t,U1(2),U2(2),[0 1 0])
 %plotVelocities(TIP.v1a,TIP.v2a,TIP.v4a,TIP.v1,TIP.v2,TIP.v4,TIP.w1,TIP.w2,TIP.w3,TIP.w4,TIP.v1t,TIP.v2t,TIP.v4t,TIP.w1t,TIP.w2t,TIP.w3t,TIP.w4t,U1(3),U2(3),[0 0 1])
 
-% printBlades('DCA',HUB.gamma1,MID.gamma1,TIP.gamma1,HUB.c1,MID.c1,TIP.c1,b,HUB.theta1,MID.theta1,TIP.theta1)
-% printBlades('DCA',HUB.gamma2,MID.gamma2,TIP.gamma2,HUB.c2,MID.c2,TIP.c2,b,HUB.theta2,MID.theta2,TIP.theta2)
+printBlades('DCA',HUB.gamma1,MID.gamma1,TIP.gamma1,HUB.c1,MID.c1,TIP.c1,b,HUB.theta1,MID.theta1,TIP.theta1)
+printBlades('DCA',HUB.gamma2,MID.gamma2,TIP.gamma2,HUB.c2,MID.c2,TIP.c2,b,HUB.theta2,MID.theta2,TIP.theta2)
 
 %bladePOINTS;
 
@@ -334,15 +334,20 @@ end
 
 %% IGV
 %IGV;
+
 IGVoffDesign;
+clearvars HUBfp MIDfp TIPfp
+IGVbest
+
 plotVelocities(HUBfp.v1a,HUBfp.v2a,HUBfp.v4a,HUBfp.v1,HUBfp.v2,HUBfp.v4,HUBfp.w1,HUBfp.w2,HUBfp.w3,HUBfp.w4,HUBfp.v1t,HUBfp.v2t,HUBfp.v4t,HUBfp.w1t,HUBfp.w2t,HUBfp.w3t,HUBfp.w4t,U1(1),U2(1),[1 0 0])
 plotVelocities(MIDfp.v1a,MIDfp.v2a,MIDfp.v4a,MIDfp.v1,MIDfp.v2,MIDfp.v4,MIDfp.w1,MIDfp.w2,MIDfp.w3,MIDfp.w4,MIDfp.v1t,MIDfp.v2t,MIDfp.v4t,MIDfp.w1t,MIDfp.w2t,MIDfp.w3t,MIDfp.w4t,U1(2),U2(2),[0 1 0])
 plotVelocities(TIPfp.v1a,TIPfp.v2a,TIPfp.v4a,TIPfp.v1,TIPfp.v2,TIPfp.v4,TIPfp.w1,TIPfp.w2,TIPfp.w3,TIPfp.w4,TIPfp.v1t,TIPfp.v2t,TIPfp.v4t,TIPfp.w1t,TIPfp.w2t,TIPfp.w3t,TIPfp.w4t,U1(3),U2(3),[0 0 1])
 printBlades('naca65',HUBfp.gamma_IGV,MIDfp.gamma_IGV,TIPfp.gamma_IGV,HUBfp.c_IGV,MIDfp.c_IGV,TIPfp.c_IGV,b,HUBfp.theta_IGV,MIDfp.theta_IGV,TIPfp.theta_IGV)
 
-IGVbest
 nBlades1
 nBlades2
+Beta1=(MID.Beta1+HUB.Beta1+TIP.Beta1)/3
+Beta2=(MID.Beta2+HUB.Beta2+TIP.Beta2)/3
 Beta=(MID.Beta1*MID.Beta2+HUB.Beta1*HUB.Beta2+TIP.Beta1*TIP.Beta2)/3
 eta1
 eta2
