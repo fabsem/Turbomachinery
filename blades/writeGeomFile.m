@@ -2,13 +2,16 @@ function writeGeomFile(x,y,z,name)
 
 % WRITEGEOMFILE writes a .dat file containing (x,y,z) coordinates
 %
-% This is meant to create a ready-to-use .dat file for CFD meshing in Pointwise
+% This is meant to create a ready-to-use .txt for CAD import
 %
 % Example:
 %
 %   writeGeomFile(x,y,z,naca0012)
 
 name = strcat(name,'.txt');
+
+strPath = [pwd '/blades/points'];
+strFull = fullfile(strPath,name);
 
 n = length(x);
 npoints = num2str(n);
@@ -22,8 +25,7 @@ elseif isempty(x)
 end
 
 
-
-fid = fopen(name,'w');
+fid = fopen(strFull,'wt');
 %fprintf(fid, npoints);
 
 for k = 1:n

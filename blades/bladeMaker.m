@@ -67,7 +67,7 @@ plot(x_profile,y_profile,'k','linewidth',2)
 xlabel('x [m]')
 ylabel('y [m]')
 title([plotname,'  - c = ', num2str(round(c,3)),', t = ',num2str(round(max(t)/c,3)),'c'])  
-saveas(gcf,[pwd '/blades/',plotname],'png')
+saveas(gcf,[pwd '/blades/plot/',plotname],'png')
 
 elseif strcmp(name,'DCA')
 
@@ -198,7 +198,7 @@ elseif strcmp(name,'DCA')
   ylabel('ax [m]')
   title([plotname,'  - c = ', num2str(round(c,3)),', t = ',num2str(round(tb,3)),'c'])
   axis equal
-  saveas(gcf,[pwd '/blades/',plotname],'png')
+  saveas(gcf,[pwd '/blades/plot/',plotname],'png')
 
 
 

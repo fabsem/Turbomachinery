@@ -37,4 +37,4 @@ writeGeomFile(y9,[],x9,'tip_IGV_on')
 
 writeGeomFile(y10,[],x10,'hub_IGV_off')
 writeGeomFile(y11,[],x11,'mid_IGV_off')
-writeGeomFile(y12,[],x12,'tip_IGV_ogg')
+writeGeomFile(y12,[],x12,'tip_IGV_off')
