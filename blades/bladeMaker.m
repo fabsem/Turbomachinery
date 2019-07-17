@@ -1,4 +1,4 @@
-function [x_profile,y_profile] = bladeMaker(name,theta,c,stagger,gamma,plotname)
+function [x_profile,y_profile] = bladeMaker(name,theta,c,stagger,gamma,plotname,rot)
 
 theta_blade = abs(theta);
 
@@ -133,8 +133,8 @@ elseif strcmp(name,'DCA')
 
  end
   
-  if stagger == 1
-     gamma = gamma * -1;
+  if stagger == 1 && rot == 1
+     gamma = (gamma * -1 + 90);
 
      R = [cosd(gamma) sind(gamma);
          -sind(gamma) cosd(gamma)];
@@ -149,9 +149,38 @@ elseif strcmp(name,'DCA')
      x = coord_meanline(:,1);
      y = coord_meanline(:,2);
      
+  elseif stagger == 1 && rot == 2
+      gamma = (gamma * -1 + 90);
+
+     R = [cosd(gamma) sind(gamma);
+         -sind(gamma) cosd(gamma)];
+ 
+            
+     coord_hub1 = (R * [x_profile,y_profile]')';
+
+     x_profile = coord_hub1(:,1); 
+     y_profile = coord_hub1(:,2);
+     
+     coord_meanline = (R * [x',y']')';
+     x = coord_meanline(:,1);
+     y = coord_meanline(:,2);
+  elseif stagger == 1
+                gamma = (gamma * -1);
+
+     R = [cosd(gamma) sind(gamma);
+         -sind(gamma) cosd(gamma)];
+ 
+            
+     coord_hub1 = (R * [x_profile,y_profile]')';
+
+     x_profile = coord_hub1(:,1); 
+     y_profile = coord_hub1(:,2);
+     
+     coord_meanline = (R * [x',y']')';
+     x = coord_meanline(:,1);
+     y = coord_meanline(:,2);
   end
 
-  
 
   
  
@@ -165,8 +194,8 @@ elseif strcmp(name,'DCA')
   plot(x_profile,y_profile,'k','linewidth',2)
   %plot(x_edge_dx,y_edge_dx)
   %plot(x_edge_sx,y_edge_sx)
-  xlabel('x [m]')
-  ylabel('y [m]')
+  xlabel('t [m]')
+  ylabel('ax [m]')
   title([plotname,'  - c = ', num2str(round(c,3)),', t = ',num2str(round(tb,3)),'c'])
   axis equal
   saveas(gcf,[pwd '/blades/',plotname],'png')
