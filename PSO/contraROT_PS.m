@@ -3,13 +3,15 @@ close all
 clc
 
 %% Add Paths
-%addPaths;
-addpath('liebleinCorrelations/')
-addpath('howellCorrelations/')
-addpath('losses/')
-addpath('IGV/')
-addpath('traupel/')
-addpath('blades/')
+addpath('../liebleinCorrelations/')
+addpath('../howellCorrelations/')
+addpath('../losses/')
+addpath('../IGV/')
+addpath('../traupel/')
+addpath('../blades/')
+addpath('../velocityTriangles')
+addpath('../PSO')
+addpath('../dataAssignments/')
 
 %% Optimization
 %work rotRatio n Mw1_tip Re1 Re2 alfa1
