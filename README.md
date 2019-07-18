@@ -1,6 +1,6 @@
 # Turbomachinery
 
-Design tool for an axial flow COUNTER ROTATING compressor.
+Design tool for an axial flow COUNTER ROTATING compressor by Semeraro & Venturelli.
 
 ## Blade Geometry Generation
 
