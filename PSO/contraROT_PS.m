@@ -16,7 +16,7 @@ addpath('blades/')
 lb = [0.3 0.7 2600 0.7 6e5 6e5 -5  -5  -5];
 ub = [0.7 1.5 3800 0.88 2e6 2e6  7  7  7];
 
-fun = @contraROTTO;
+fun = @contraROT_objFUN;
 nvars = 9;
 
 %Starts ParallelPool for Parallel Computation
