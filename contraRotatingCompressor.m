@@ -351,3 +351,5 @@ BetaoffDesign=(MIDfp.Beta1*MIDfp.Beta2+HUBfp.Beta1*HUBfp.Beta2+TIPfp.Beta1*TIPfp
 
 % Efficiency - OFF DESIGN CONDITIONS
 etaTOToffDesign = best_etaTOT
+
+save results
